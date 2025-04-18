@@ -1,3 +1,6 @@
+// This script automatically disables a projectile after a fixed time.
+// Used to clean up projectiles that do not hit anything.
+
 using UnityEngine;
 
 public class ProjectileAutoDisable : MonoBehaviour

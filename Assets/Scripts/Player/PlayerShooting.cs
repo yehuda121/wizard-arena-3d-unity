@@ -1,3 +1,6 @@
+// This script handles player shooting behavior.
+// It spawns projectiles from a defined shoot point, using the projectile pool.
+
 using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour

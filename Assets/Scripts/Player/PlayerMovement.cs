@@ -1,3 +1,6 @@
+// This script handles player movement logic.
+// (Exact behavior depends on your implementation.)
+
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// This script manages a pool of reusable projectile objects.
+// It returns an available projectile from the pool instead of instantiating new ones.
+
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectilePool : MonoBehaviour
