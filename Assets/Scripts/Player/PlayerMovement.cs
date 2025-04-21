@@ -1,26 +1,50 @@
-// This script handles player movement logic.
-// (Exact behavior depends on your implementation.)
-
 using UnityEngine;
+
+// This script makes the player rotate left/right and move forward in the direction he's facing.
+// The down arrow will be used later for aim mode.
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float rotateSpeed = 720f;
+    public float moveSpeed = 5f;        // Forward movement speed
+    public float rotationStep = 3f;    // Degrees per frame
+    private Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        float rotateInput = 0f;
+        // Left/Right arrows (or A/D)
+        if (Input.GetKey(KeyCode.LeftArrow))
+            rotateInput = -1f;
+        else if (Input.GetKey(KeyCode.RightArrow))
+            rotateInput = 1f;
+        
+        float moveInput = Input.GetKey(KeyCode.UpArrow) ? 1f : 0f;
 
-        Vector3 move = new Vector3(h, 0, v).normalized;
-
-        if (move != Vector3.zero)
+        // Rotate in place (or while moving) with fixed speed
+        if (rotateInput != 0f)
         {
-            transform.Translate(move * moveSpeed * Time.deltaTime, Space.World);
+            float rotationAmount = rotateInput * rotationStep;
+            transform.Rotate(0f, rotationAmount, 0f);
+        }
+        else
+        {
+            // Clear physics-based rotation only if Rigidbody is not kinematic
+            if (rb != null && !rb.isKinematic)
+            {
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
 
-            Quaternion toRotation = Quaternion.LookRotation(move, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotateSpeed * Time.deltaTime);
+        // Move forward only if UpArrow is held
+        if (moveInput > 0f)
+        {
+            Vector3 moveDir = transform.forward * moveSpeed * Time.deltaTime;
+            rb.MovePosition(rb.position + moveDir);
         }
     }
 }
