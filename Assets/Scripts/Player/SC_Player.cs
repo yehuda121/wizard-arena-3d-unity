@@ -20,6 +20,7 @@ public class SC_Player : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        Debug.Log("taking damage!");
         currentHealth -= amount;
 
         float percent = Mathf.Clamp01(currentHealth / maxHealth); // Clamp to 0-1 range

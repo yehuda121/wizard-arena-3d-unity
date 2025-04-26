@@ -67,51 +67,91 @@ public class SC_EnemyController : MonoBehaviour
         }
     }
 
-    // Shoots a projectile using the pool
-    //void Shoot() //enemy soot randomly and not on player
+    //void Shoot()
     //{
     //    if (projectilePool == null || shootPoint == null || player == null)
     //        return;
 
-    //    // Get a projectile from the pool
+    //    // Get projectile from pool
     //    GameObject proj = projectilePool.GetNextProjectile();
 
-    //    // Set position and rotation based on the shoot point
+    //    // Set projectile position at the shoot point
     //    proj.transform.position = shootPoint.position;
-    //    proj.transform.rotation = shootPoint.rotation;
 
-    //    // Activate the projectile
+    //    // Calculate full 3D direction toward the player (including Y axis)
+    //    //Vector3 direction = (player.position + Vector3.up * 0.5f) - shootPoint.position;
+    //    //direction = direction.normalized;
+    //    Vector3 direction = (player.position - shootPoint.position).normalized;
+
+    //    // Apply velocity
+    //    Rigidbody rb = proj.GetComponent<Rigidbody>();
+    //    rb.velocity = direction * 10f;
+
+    //    // Activate projectile
+    //    proj.SetActive(true);
+    //    Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
+    //}
+    //void Shoot()
+    //{
+    //    if (projectilePool == null || shootPoint == null || player == null)
+    //        return;
+
+
+
+    //    // Get projectile from pool
+    //    GameObject proj = projectilePool.GetNextProjectile();
+    //    proj.transform.position = shootPoint.position;
+
+    //    Rigidbody rb = proj.GetComponent<Rigidbody>();
+    //    rb.isKinematic = false;
+    //    rb.detectCollisions = true;
+    //    rb.velocity = Vector3.zero;
+    //    rb.angularVelocity = Vector3.zero;
+    //    rb.drag = 0f;
+    //    rb.angularDrag = 0f;
+
+    //    // Calculate full 3D direction toward the player (including Y axis)
+    //    //Vector3 direction = (player.position - shootPoint.position).normalized;
+    //    // סובב את נקודת הירי כך שתפנה לשחקן
+    //    Vector3 direction = player.position;
+    //    direction.y += 0.3f; // לכוון לגובה חזה ולא לרגליים או ראש (אפשר לשחק עם המספר)
+    //    shootPoint.LookAt(direction);
+
+    //    rb.velocity = shootPoint.forward * 10f;
+
     //    proj.SetActive(true);
 
-    //    // Launch forward in the direction the shoot point is facing
-    //    Rigidbody rb = proj.GetComponent<Rigidbody>();
-    //    rb.velocity = shootPoint.forward * 10f;
+    //    Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
     //}
     void Shoot()
     {
         if (projectilePool == null || shootPoint == null || player == null)
             return;
 
-        // Get projectile from pool
+        // חישוב ידני של וקטור לכיוון השחקן
+        Vector3 direction = (player.position - shootPoint.position).normalized;
+
+        // קבל קליע מהפול
         GameObject proj = projectilePool.GetNextProjectile();
-
-        // Set projectile position at the shoot point
         proj.transform.position = shootPoint.position;
+        proj.transform.rotation = Quaternion.LookRotation(direction); // לגרום לקליע להסתובב לכיוון הירי
 
-        // Calculate horizontal direction toward player (ignoring height)
-        Vector3 direction = player.position - shootPoint.position;
-        direction.y = 0f; // Remove vertical difference
-        direction = direction.normalized;
-
-        // Apply velocity
         Rigidbody rb = proj.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.detectCollisions = true;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.drag = 0f;
+        rb.angularDrag = 0f;
+
+        // תן מהירות לפי הכיוון
         rb.velocity = direction * 10f;
 
-        // Activate projectile
         proj.SetActive(true);
+
+        // נצייר קו לפי הכיוון האמיתי של הירי
+        Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
     }
-
-
 
     // Calculate avoidance vector to prevent overlapping with other enemies
     Vector3 CalculateAvoidance()

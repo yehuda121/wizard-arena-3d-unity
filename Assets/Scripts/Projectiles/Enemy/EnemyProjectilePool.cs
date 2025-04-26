@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyProjectilePool : MonoBehaviour
 {
     public GameObject projectilePrefab;
-    public int poolSize = 10;
+    public int poolSize = 30;
 
     private List<GameObject> projectiles;
     private int currentIndex = 0;
@@ -24,7 +24,22 @@ public class EnemyProjectilePool : MonoBehaviour
     public GameObject GetNextProjectile()
     {
         GameObject p = projectiles[currentIndex];
+
+        if (!p.activeSelf)
+        {
+            p.SetActive(true);
+            Debug.Log("Activating projectile from pool at index: " + currentIndex);
+        }
+        else
+        {
+            Debug.LogWarning("Projectile already active at index: " + currentIndex + ". Forcing reset.");
+            p.SetActive(false); // קודם לכבות
+            p.SetActive(true);  // ואז להפעיל מחדש
+        }
+
         currentIndex = (currentIndex + 1) % poolSize;
         return p;
     }
+
+
 }

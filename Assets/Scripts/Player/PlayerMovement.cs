@@ -1,50 +1,98 @@
+//using UnityEngine;
+
+//// This script lets the player move and rotate simultaneously
+//public class PlayerMovement : MonoBehaviour
+//{
+//    public float moveSpeed = 5f;           // Forward movement speed
+//    public float rotationSpeed = 120f;     // Rotation speed in degrees per second
+//    private Rigidbody rb;
+
+//    void Start()
+//    {
+//        rb = GetComponent<Rigidbody>();
+//    }
+
+//    void Update()
+//    {
+//        float moveInput = 0f;
+//        float rotateInput = 0f;
+
+//        // Input collection: just raw values (-1, 0, 1)
+//        if (Input.GetKey(KeyCode.LeftArrow))
+//            rotateInput = -1f;
+//        else if (Input.GetKey(KeyCode.RightArrow))
+//            rotateInput = 1f;
+
+//        if (Input.GetKey(KeyCode.UpArrow))
+//            moveInput = 1f;
+
+//        // Apply movement
+//        if (moveInput != 0f)
+//        {
+//            Vector3 moveDirection = transform.forward * moveInput * moveSpeed * Time.deltaTime;
+//            rb.MovePosition(rb.position + moveDirection);
+//        }
+
+//        // Apply rotation
+//        if (rotateInput != 0f)
+//        {
+//            float rotationAmount = rotateInput * rotationSpeed * Time.deltaTime;
+//            Quaternion turn = Quaternion.Euler(0f, rotationAmount, 0f);
+//            rb.MoveRotation(rb.rotation * turn);
+//        }
+//    }
+//}
 using UnityEngine;
 
-// This script makes the player rotate left/right and move forward in the direction he's facing.
-// The down arrow will be used later for aim mode.
-
+// This script lets the player move and rotate while avoiding going through walls
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;        // Forward movement speed
-    public float rotationStep = 5f;    // Degrees per frame
+    public float moveSpeed = 5f;          // Forward movement speed
+    public float rotationSpeed = 120f;    // Rotation speed in degrees per second
+    public float wallDetectionDistance = 0.5f; // Distance to detect walls in front
+
     private Rigidbody rb;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
     void Update()
     {
+        float moveInput = 0f;
         float rotateInput = 0f;
-        // Left/Right arrows (or A/D)
+
+        // Input collection
         if (Input.GetKey(KeyCode.LeftArrow))
             rotateInput = -1f;
         else if (Input.GetKey(KeyCode.RightArrow))
             rotateInput = 1f;
-        
-        float moveInput = Input.GetKey(KeyCode.UpArrow) ? 1f : 0f;
 
-        // Rotate in place (or while moving) with fixed speed
+        if (Input.GetKey(KeyCode.UpArrow))
+            moveInput = 1f;
+
+        // Apply rotation
         if (rotateInput != 0f)
         {
-            float rotationAmount = rotateInput * rotationStep;
-            transform.Rotate(0f, rotationAmount, 0f);
-        }
-        else
-        {
-            // Clear physics-based rotation only if Rigidbody is not kinematic
-            if (rb != null && !rb.isKinematic)
-            {
-                rb.angularVelocity = Vector3.zero;
-            }
+            float rotationAmount = rotateInput * rotationSpeed * Time.deltaTime;
+            Quaternion turn = Quaternion.Euler(0f, rotationAmount, 0f);
+            rb.MoveRotation(rb.rotation * turn);
         }
 
-        // Move forward only if UpArrow is held
+        // Check for wall before moving
         if (moveInput > 0f)
         {
-            Vector3 moveDir = transform.forward * moveSpeed * Time.deltaTime;
-            rb.MovePosition(rb.position + moveDir);
+            if (!Physics.Raycast(transform.position, transform.forward, wallDetectionDistance))
+            {
+                Vector3 moveDirection = transform.forward * moveSpeed * Time.deltaTime;
+                rb.MovePosition(rb.position + moveDirection);
+            }
+            else
+            {
+                //Debug.Log("Blocked by wall, cannot move forward.");
+            }
         }
     }
 }
