@@ -55,13 +55,13 @@ public class SC_EnemySpawner : MonoBehaviour
                 enemy.transform.rotation = spawnPoint.rotation;
                 enemy.SetActive(true);
 
-                Debug.Log("[EnemySpawner] Spawned enemy at: " + spawnPoint.position);
+                //Debug.Log("[EnemySpawner] Spawned enemy at: " + spawnPoint.position);
                 return;
             }
         }
 
         // אם לא מצא מקום אחרי 5 ניסיונות
-        Debug.Log("[EnemySpawner] No available space to spawn enemy.");
+        //Debug.Log("[EnemySpawner] No available space to spawn enemy.");
     }
 
 }

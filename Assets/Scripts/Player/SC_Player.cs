@@ -2,29 +2,27 @@ using UnityEngine;
 
 public class SC_Player : MonoBehaviour
 {
-    public float maxHealth = 100f;
-    private float currentHealth;
+    public float maxHealth = 100f;                   // Maximum health value
+    private float currentHealth;                     // Current health value during gameplay
 
-    public SC_HealthBar healthBar;
+    public SC_PlayerHealthBar healthBar;             // Reference to the UI health bar (assign in Inspector)
 
     void Start()
     {
         currentHealth = maxHealth;
 
-        // ????? ?? ????? ????? (??? PlayerHealthBar)
-        GameObject healthBarObj = GameObject.Find("PlayerHealthBar");
-        if (healthBarObj != null)
-        {
-            healthBar = healthBarObj.GetComponent<SC_HealthBar>();
-            healthBar.target = GameObject.Find("HealthBarAnchor").transform; // ????? ??? ??????
-        }
+        // Initialize the health bar to full
+        if (healthBar != null)
+            healthBar.SetHealth(1f);
+        else
+            Debug.LogWarning("Player health bar is not assigned in the Inspector.");
     }
 
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
-        float percent = currentHealth / maxHealth;
 
+        float percent = Mathf.Clamp01(currentHealth / maxHealth); // Clamp to 0-1 range
         if (healthBar != null)
             healthBar.SetHealth(percent);
 
@@ -37,6 +35,6 @@ public class SC_Player : MonoBehaviour
     void Die()
     {
         Debug.Log("Player Died!");
-        // ???? ?????? Game Over ??? ?????
+        // TODO: Trigger Game Over logic or restart
     }
 }

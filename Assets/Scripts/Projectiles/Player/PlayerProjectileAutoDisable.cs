@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-public class ProjectileAutoDisable : MonoBehaviour
+public class PlayerProjectileAutoDisable : MonoBehaviour
 {
     private float lifeTime = 2f;
 

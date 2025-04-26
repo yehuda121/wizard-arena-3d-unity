@@ -11,12 +11,12 @@ public class PlayerShooting : MonoBehaviour
     public float cooldown = 1f; // Delay between shots
 
     private float lastShotTime = -999f;
-    private ProjectilePool projectilePool;
+    private PlayerProjectilePool projectilePool;
 
     void Start()
     {
         // Find the object pool manager in the scene
-        projectilePool = FindObjectOfType<ProjectilePool>();
+        projectilePool = FindObjectOfType<PlayerProjectilePool>();
     }
 
     void Update()

@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;        // Forward movement speed
-    public float rotationStep = 3f;    // Degrees per frame
+    public float rotationStep = 5f;    // Degrees per frame
     private Rigidbody rb;
 
     void Start()

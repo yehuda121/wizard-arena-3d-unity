@@ -23,7 +23,7 @@ public class SC_EnemyPool : MonoBehaviour
             enemies.Add(enemy);
         }
 
-        Debug.Log("[EnemyPool] Initialized with " + poolSize + " enemies.");
+        //Debug.Log("[EnemyPool] Initialized with " + poolSize + " enemies.");
     }
 
     public GameObject GetNextEnemy()
@@ -32,12 +32,12 @@ public class SC_EnemyPool : MonoBehaviour
         {
             if (!enemy.activeInHierarchy)
             {
-                Debug.Log("[EnemyPool] Returning available enemy.");
+                //Debug.Log("[EnemyPool] Returning available enemy.");
                 return enemy;
             }
         }
 
-        Debug.LogWarning("[EnemyPool] No available enemy in pool.");
+        //Debug.LogWarning("[EnemyPool] No available enemy in pool.");
         return null;
     }
 }

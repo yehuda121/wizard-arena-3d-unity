@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectilePool : MonoBehaviour
+public class PlayerProjectilePool : MonoBehaviour
 {
     public GameObject projectilePrefab;
     public int poolSize = 5;

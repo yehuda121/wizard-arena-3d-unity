@@ -1,66 +1,78 @@
-﻿//// This script controls projectile movement and collision behavior.
-//// It moves forward and deals damage to enemies on impact, then disables itself.
-
+﻿
 //using UnityEngine;
 
 //public class SC_MagicProjectile : MonoBehaviour
 //{
-//    public float speed = 20f;
 //    public float damage = 25f;
 
-//    void Update()
+//    private void OnTriggerEnter(Collider other)
 //    {
-//        transform.Translate(Vector3.forward * speed * Time.deltaTime);
-//    }
-
-//    void OnTriggerEnter(Collider other)
-//    {
+//        // If the projectile hits an enemy
 //        if (other.CompareTag("Enemy"))
 //        {
+//            // Try to get the enemy's health system component
 //            SC_HealthSystem health = other.GetComponent<SC_HealthSystem>();
 //            if (health != null)
 //            {
+//                // Deal damage to the enemy
 //                health.TakeDamage(damage);
 //            }
 
-//            gameObject.SetActive(false); // לא הורסים בגלל Object Pool
+//            // Disable the projectile (don't destroy, because we are using object pooling)
+//            gameObject.SetActive(false);
 //        }
+//        // If the projectile hits something else (but not the player)
 //        else if (!other.CompareTag("Player"))
 //        {
-//            gameObject.SetActive(false); // כבה גם בפגיעה בקיר וכו'
+//            // Disable the projectile on any other collision like a wall
+//            gameObject.SetActive(false);
 //        }
 //    }
 //}
-// This script handles collision detection and damage dealing for a magic projectile.
-// The projectile is moved externally (via Rigidbody velocity), and this script only disables it on impact.
-
 using UnityEngine;
 
 public class SC_MagicProjectile : MonoBehaviour
 {
+    // This value is no longer used directly but can be kept for flexibility
     public float damage = 25f;
+
+    public enum ShooterType { Player, Enemy }
+    public ShooterType shooter;
 
     private void OnTriggerEnter(Collider other)
     {
-        // If the projectile hits an enemy
-        if (other.CompareTag("Enemy"))
+        //Player shot and hit an Enemy
+        if (shooter == ShooterType.Player && other.CompareTag("Enemy"))
         {
-            // Try to get the enemy's health system component
-            SC_HealthSystem health = other.GetComponent<SC_HealthSystem>();
-            if (health != null)
+            SC_EnemyHealthSystem enemyHealth = other.GetComponent<SC_EnemyHealthSystem>();
+            if (enemyHealth != null)
             {
-                // Deal damage to the enemy
-                health.TakeDamage(damage);
+                float percent = 0.25f; // 25% damage
+                enemyHealth.TakeDamage(enemyHealth.maxHealth * percent);
             }
 
-            // Disable the projectile (don't destroy, because we are using object pooling)
-            gameObject.SetActive(false);
+            gameObject.SetActive(false); // always disable after valid hit
         }
-        // If the projectile hits something else (but not the player)
-        else if (!other.CompareTag("Player"))
+
+        // Enemy shot and hit the Player
+        else if (shooter == ShooterType.Enemy && other.CompareTag("Player"))
         {
-            // Disable the projectile on any other collision like a wall
+            SC_Player player = other.GetComponent<SC_Player>();
+            if (player != null)
+            {
+                float percent = 0.10f; // 10% damage
+                player.TakeDamage(player.maxHealth * percent);
+            }
+
+            gameObject.SetActive(false); // always disable after valid hit
+        }
+
+        // Collision with anything else
+        else if (!other.CompareTag("Projectile") && !other.CompareTag("Enemy") && !other.CompareTag("Player"))
+        {
             gameObject.SetActive(false);
         }
+
+        // No action if projectile hits another projectile or its own shooter-type target
     }
 }
