@@ -1,34 +1,4 @@
 ﻿
-//using UnityEngine;
-
-//public class SC_MagicProjectile : MonoBehaviour
-//{
-//    public float damage = 25f;
-
-//    private void OnTriggerEnter(Collider other)
-//    {
-//        // If the projectile hits an enemy
-//        if (other.CompareTag("Enemy"))
-//        {
-//            // Try to get the enemy's health system component
-//            SC_HealthSystem health = other.GetComponent<SC_HealthSystem>();
-//            if (health != null)
-//            {
-//                // Deal damage to the enemy
-//                health.TakeDamage(damage);
-//            }
-
-//            // Disable the projectile (don't destroy, because we are using object pooling)
-//            gameObject.SetActive(false);
-//        }
-//        // If the projectile hits something else (but not the player)
-//        else if (!other.CompareTag("Player"))
-//        {
-//            // Disable the projectile on any other collision like a wall
-//            gameObject.SetActive(false);
-//        }
-//    }
-//}
 using UnityEngine;
 
 public class SC_MagicProjectile : MonoBehaviour
@@ -41,6 +11,7 @@ public class SC_MagicProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("player projectile trigered");
         //Player shot and hit an Enemy
         if (shooter == ShooterType.Player && other.CompareTag("Enemy"))
         {
@@ -57,15 +28,15 @@ public class SC_MagicProjectile : MonoBehaviour
         // Enemy shot and hit the Player
         else if (shooter == ShooterType.Enemy && other.CompareTag("Player"))
         {
-            SC_Player player = other.GetComponent<SC_Player>();
-            if (player != null)
+            SC_PlayerHealthSystem playerHealth = other.GetComponent<SC_PlayerHealthSystem>();
+            if (playerHealth != null)
             {
-                float percent = 0.10f; // 10% damage
-                player.TakeDamage(player.maxHealth * percent);
+                float damageAmount = 10f; 
+                playerHealth.TakeDamage(damageAmount);
             }
-
             gameObject.SetActive(false); // always disable after valid hit
         }
+
 
         // Collision with anything else
         else if (!other.CompareTag("Projectile") && !other.CompareTag("Enemy") && !other.CompareTag("Player"))

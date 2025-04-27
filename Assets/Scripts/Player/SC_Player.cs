@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class SC_Player : MonoBehaviour
 {
-    public float maxHealth = 100f;                   // Maximum health value
-    private float currentHealth;                     // Current health value during gameplay
+    public float maxHealth = 100f;       // Maximum health value
+    private float currentHealth;         // Current health value during gameplay
 
-    public SC_PlayerHealthBar healthBar;             // Reference to the UI health bar (assign in Inspector)
+    public SC_PlayerHealthBar healthBar; // Reference to the UI health bar (assign in Inspector)
 
     void Start()
     {
@@ -16,21 +16,6 @@ public class SC_Player : MonoBehaviour
             healthBar.SetHealth(1f);
         else
             Debug.LogWarning("Player health bar is not assigned in the Inspector.");
-    }
-
-    public void TakeDamage(float amount)
-    {
-        Debug.Log("taking damage!");
-        currentHealth -= amount;
-
-        float percent = Mathf.Clamp01(currentHealth / maxHealth); // Clamp to 0-1 range
-        if (healthBar != null)
-            healthBar.SetHealth(percent);
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
     void Die()

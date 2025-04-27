@@ -7,7 +7,7 @@ public class SC_EnemyController : MonoBehaviour
     public float stopDistance = 8f;          // Stop approaching the player when this close
 
     [Header("Avoidance Settings")]
-    public float avoidRadius = 5f;           // How far to check for nearby enemies to avoid
+    public float avoidRadius = 8f;           // How far to check for nearby enemies to avoid
     public LayerMask enemyLayer;             // Only consider other enemies for avoidance
 
     [Header("Shooting Settings")]
@@ -67,75 +67,19 @@ public class SC_EnemyController : MonoBehaviour
         }
     }
 
-    //void Shoot()
-    //{
-    //    if (projectilePool == null || shootPoint == null || player == null)
-    //        return;
-
-    //    // Get projectile from pool
-    //    GameObject proj = projectilePool.GetNextProjectile();
-
-    //    // Set projectile position at the shoot point
-    //    proj.transform.position = shootPoint.position;
-
-    //    // Calculate full 3D direction toward the player (including Y axis)
-    //    //Vector3 direction = (player.position + Vector3.up * 0.5f) - shootPoint.position;
-    //    //direction = direction.normalized;
-    //    Vector3 direction = (player.position - shootPoint.position).normalized;
-
-    //    // Apply velocity
-    //    Rigidbody rb = proj.GetComponent<Rigidbody>();
-    //    rb.velocity = direction * 10f;
-
-    //    // Activate projectile
-    //    proj.SetActive(true);
-    //    Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
-    //}
-    //void Shoot()
-    //{
-    //    if (projectilePool == null || shootPoint == null || player == null)
-    //        return;
-
-
-
-    //    // Get projectile from pool
-    //    GameObject proj = projectilePool.GetNextProjectile();
-    //    proj.transform.position = shootPoint.position;
-
-    //    Rigidbody rb = proj.GetComponent<Rigidbody>();
-    //    rb.isKinematic = false;
-    //    rb.detectCollisions = true;
-    //    rb.velocity = Vector3.zero;
-    //    rb.angularVelocity = Vector3.zero;
-    //    rb.drag = 0f;
-    //    rb.angularDrag = 0f;
-
-    //    // Calculate full 3D direction toward the player (including Y axis)
-    //    //Vector3 direction = (player.position - shootPoint.position).normalized;
-    //    // סובב את נקודת הירי כך שתפנה לשחקן
-    //    Vector3 direction = player.position;
-    //    direction.y += 0.3f; // לכוון לגובה חזה ולא לרגליים או ראש (אפשר לשחק עם המספר)
-    //    shootPoint.LookAt(direction);
-
-    //    rb.velocity = shootPoint.forward * 10f;
-
-    //    proj.SetActive(true);
-
-    //    Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
-    //}
     void Shoot()
     {
         if (projectilePool == null || shootPoint == null || player == null)
             return;
 
-        // חישוב ידני של וקטור לכיוון השחקן
-        Vector3 direction = (player.position - shootPoint.position).normalized;
+        // Calculate the direction of the player to shoot
+        Vector3 targetPosition = player.position;
+        //targetPosition.y -= 1f; // Adjust target position slightly lower
+        Vector3 direction = (targetPosition - shootPoint.position).normalized;
 
-        // קבל קליע מהפול
+        // Get a projectile from the pool
         GameObject proj = projectilePool.GetNextProjectile();
-        proj.transform.position = shootPoint.position;
-        proj.transform.rotation = Quaternion.LookRotation(direction); // לגרום לקליע להסתובב לכיוון הירי
-
+        // Making shur that there is no valocity from previous shooting
         Rigidbody rb = proj.GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.detectCollisions = true;
@@ -144,31 +88,38 @@ public class SC_EnemyController : MonoBehaviour
         rb.drag = 0f;
         rb.angularDrag = 0f;
 
-        // תן מהירות לפי הכיוון
+        proj.transform.position = shootPoint.position;
+        proj.transform.rotation = Quaternion.LookRotation(direction); // Rotate the projectile turds the player
+
+        // Gives speed to the projectile
         rb.velocity = direction * 10f;
 
         proj.SetActive(true);
 
-        // נצייר קו לפי הכיוון האמיתי של הירי
+        // Drow a red line to see if the projectile hit the player for debaging
         Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
     }
 
     // Calculate avoidance vector to prevent overlapping with other enemies
     Vector3 CalculateAvoidance()
     {
+        // Initialize the avoidance vector
         Vector3 avoidance = Vector3.zero;
-
+        // Find all enemies within the avoidRadius
         Collider[] hits = Physics.OverlapSphere(transform.position, avoidRadius, enemyLayer);
 
         foreach (Collider hit in hits)
         {
-            if (hit.gameObject != gameObject)
+            if (hit.gameObject != gameObject)// Ignore self
             {
+                // Direction away from the other enemy
                 Vector3 pushDir = transform.position - hit.transform.position;
+                // Distance to the other enemy
                 float distance = pushDir.magnitude;
 
                 if (distance > 0)
                 {
+                    // Weighted push based on distance
                     avoidance += pushDir.normalized / distance;
                 }
             }

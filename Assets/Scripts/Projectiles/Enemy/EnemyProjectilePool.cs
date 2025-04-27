@@ -28,7 +28,7 @@ public class EnemyProjectilePool : MonoBehaviour
         if (!p.activeSelf)
         {
             p.SetActive(true);
-            Debug.Log("Activating projectile from pool at index: " + currentIndex);
+            //Debug.Log("Activating projectile from pool at index: " + currentIndex);
         }
         else
         {

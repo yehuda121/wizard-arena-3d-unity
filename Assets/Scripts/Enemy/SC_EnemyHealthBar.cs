@@ -1,28 +1,4 @@
-﻿//using UnityEngine;
-//using UnityEngine.UI;
-
-//public class SC_EnemyHealthBar : MonoBehaviour
-//{
-//    public Image fillImage;        // Reference to the image component that fills the bar
-//    public Transform target;       // The Transform (anchor point) the bar should follow
-
-//    void Update()
-//    {
-//        // Keep the health bar positioned above the enemy on screen
-//        if (target != null)
-//        {
-//            transform.position = Camera.main.WorldToScreenPoint(target.position);
-//        }
-//    }
-
-//    // Sets the health percentage visually on the bar
-//    public void SetHealth(float percent)
-//    {
-//        if (fillImage != null)
-//            fillImage.fillAmount = percent;
-//    }
-//}
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SC_EnemyHealthBar : MonoBehaviour
@@ -41,24 +17,24 @@ public class SC_EnemyHealthBar : MonoBehaviour
     {
         if (target == null)
             return;
-
-        // מיקום הפס
+        // Update the position of the health bar
         transform.position = Camera.main.WorldToScreenPoint(target.position);
 
-        // חישוב כיוון המצלמה
+        // Calculate the forward direction of the camera
         Vector3 cameraForward = Camera.main.transform.forward;
         Vector3 dirToTarget = (target.position - Camera.main.transform.position).normalized;
 
-        // חישוב הזווית
+        // Calculate the angle between the camera's forward direction and the direction to the target
         float angle = Vector3.Angle(cameraForward, dirToTarget);
 
-        // האם בתוך שדה ראייה
-        bool isVisible = angle < 60f; // תוכל לשנות ל-70, 80 לפי הצורך
+        // Check if the target is within the camera's field of view
+        bool isVisible = angle < 60f; // You can adjust to 70, 80, etc., if needed
 
-        // הצגה/הסתרה
+        // Show or hide the health bar based on visibility
         if (canvasGroup != null)
             canvasGroup.alpha = isVisible ? 1f : 0f;
     }
+
 
     public void SetHealth(float percent)
     {

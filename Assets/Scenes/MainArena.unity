@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 242129450}
   - component: {fileID: 242129451}
   - component: {fileID: 242129452}
+  - component: {fileID: 242129453}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -289,9 +290,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 84
+  m_Constraints: 116
   m_CollisionDetection: 1
 --- !u!114 &242129452
 MonoBehaviour:
@@ -307,6 +308,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   healthBar: {fileID: 5299307671556049629}
+--- !u!114 &242129453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242129444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a541facff930b488b567456fdd90d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!1 &293637459
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,7 +378,7 @@ GameObject:
   - component: {fileID: 338189078}
   - component: {fileID: 338189077}
   m_Layer: 0
-  m_Name: ProjectilePool
+  m_Name: PlayerProjectilePool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -383,7 +397,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 2260447199199480376, guid: 41344eba3ba0426498e013e741476ab2, type: 3}
-  poolSize: 5
+  poolSize: 10
 --- !u!4 &338189078
 Transform:
   m_ObjectHideFlags: 0
