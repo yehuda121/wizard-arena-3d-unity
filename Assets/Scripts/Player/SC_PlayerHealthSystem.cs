@@ -4,6 +4,7 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 {
     public float maxHealth = 100f;             // Maximum health
     private float currentHealth;               // Current health
+    public bool isBlocking = false;            // Shild mode
 
     private SC_PlayerHealthBar healthBar;       // Reference to the Player HealthBar
 
@@ -23,7 +24,12 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        Debug.Log("[Player] Took damage: " + amount);
+        if (isBlocking)
+        {
+            // shild is on
+            return;
+        }
+        //Debug.Log("[Player] Took damage: " + amount);
         currentHealth -= amount;
 
         float percent = Mathf.Clamp01(currentHealth / maxHealth);

@@ -6,6 +6,7 @@ public class PlayerShooting : MonoBehaviour
     public Transform shootPoint;         // Where the projectile spawns
     public float shootForce = 15f;        // Speed of the projectile
     public float cooldown = 0.2f;         // Delay between shots (lower = faster shooting)
+    private SC_PlayerHealthSystem playerHealth;
 
     private float lastShotTime = -999f;
     private PlayerProjectilePool projectilePool;
@@ -14,12 +15,22 @@ public class PlayerShooting : MonoBehaviour
     {
         // Find the object pool manager in the scene
         projectilePool = FindObjectOfType<PlayerProjectilePool>();
+        playerHealth = FindObjectOfType<SC_PlayerHealthSystem>();
     }
 
     void Update()
     {
+        // Check is the player is blocking (shild on)
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            playerHealth.isBlocking = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
+        {
+            playerHealth.isBlocking = false;
+        }
         // Check if the Space key is being held and enough time passed since last shot
-        if (Input.GetKey(KeyCode.Space) && Time.time > lastShotTime + cooldown)
+        if (!playerHealth.isBlocking && Input.GetKey(KeyCode.Space) && Time.time > lastShotTime + cooldown)
         {
             Shoot();
             lastShotTime = Time.time;

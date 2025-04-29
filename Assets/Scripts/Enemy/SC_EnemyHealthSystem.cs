@@ -57,7 +57,7 @@ public class SC_EnemyHealthSystem : MonoBehaviour
     // Call this method to apply damage to the enemy
     public void TakeDamage(float amount)
     {
-        Debug.Log("Enemy took damage: " + amount);
+        //Debug.Log("Enemy took damage: " + amount);
         currentHealth -= amount;
 
         // Update the health bar fill
