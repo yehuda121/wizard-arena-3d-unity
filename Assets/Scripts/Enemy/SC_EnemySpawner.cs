@@ -56,6 +56,13 @@ public class SC_EnemySpawner : MonoBehaviour
                 enemy.transform.rotation = spawnPoint.rotation;
                 enemy.SetActive(true);
 
+                // reset the enemy
+                SC_EnemyHealthSystem enemyHealth = enemy.GetComponent<SC_EnemyHealthSystem>();
+                if (enemyHealth != null)
+                {
+                    enemyHealth.ResetEnemy();
+                }
+
                 // Debug.Log("[EnemySpawner] Spawned enemy at: " + spawnPoint.position);
                 return;
             }

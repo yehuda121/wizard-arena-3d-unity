@@ -71,6 +71,39 @@ public class SC_EnemyHealthSystem : MonoBehaviour
             Die();
         }
     }
+    public void ResetEnemy()
+    {
+        currentHealth = maxHealth;
+
+        // אם אין HealthBar קיים (כי מחקו במוות) – ליצור חדש
+        if (healthBar == null)
+        {
+            // Find the anchor point on the enemy
+            Transform anchor = transform.Find("HealthBarAnchor");
+
+            // Load the EnemyHealthBar prefab from the Resources folder
+            GameObject hbPrefab = Resources.Load<GameObject>("EnemyHealthBar");
+            GameObject healthCanvas = GameObject.Find("UI_HealthEnemy");
+
+            if (hbPrefab != null && healthCanvas != null && anchor != null)
+            {
+                GameObject hbInstance = Instantiate(hbPrefab, healthCanvas.transform);
+                healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
+                healthBar.target = anchor;
+                healthBar.SetHealth(1f); // full health
+            }
+            else
+            {
+                Debug.LogWarning("[ResetEnemy] Missing references!");
+            }
+        }
+        else
+        {
+            // אם יש HealthBar אז רק לאפס אותו
+            healthBar.SetHealth(1f);
+        }
+    }
+
 
     // Called when the enemy dies
     void Die()
