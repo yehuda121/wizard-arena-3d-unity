@@ -24,12 +24,15 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        if (isBlocking)
+        // Check the current difficulty level from the GameManager
+        SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
+        if (isBlocking && gameManager != null && gameManager.currentDifficulty != DifficultyLevel.Boss)
         {
-            // shild is on
+            // If blocking and not in Boss level then take no damage
             return;
         }
-        //Debug.Log("[Player] Took damage: " + amount);
+
+        // Reduce health regardless of shield — the shield logic is handled externally
         currentHealth -= amount;
 
         float percent = Mathf.Clamp01(currentHealth / maxHealth);
@@ -37,11 +40,29 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         if (healthBar != null)
             healthBar.SetHealth(percent);
 
+        // Update the text on the screen
+        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        if (hud != null)
+            hud.UpdateHealth(currentHealth / maxHealth);
+
         if (currentHealth <= 0f)
         {
             Die();
         }
     }
+
+    public void ResetToFull()
+    {
+        currentHealth = maxHealth;
+        if (healthBar != null)
+            healthBar.SetHealth(1f);
+
+        // Update the text on the screen
+        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        if (hud != null)
+            hud.UpdateHealth(currentHealth / maxHealth);
+    }
+
 
     private void Die()
     {

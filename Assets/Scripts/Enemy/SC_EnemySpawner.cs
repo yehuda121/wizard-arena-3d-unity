@@ -2,24 +2,51 @@
 // It uses the EnemyPool to retrieve enemies instead of instantiating new ones.
 
 using UnityEngine;
+// Define the available difficulty levels
 
 public class SC_EnemySpawner : MonoBehaviour
 {
+    // Current difficulty level for the spawner
+    public DifficultyLevel currentDifficulty = DifficultyLevel.Easy;
+
     public SC_EnemyPool enemyPool;         // Reference to enemy pool
-    public float spawnInterval = 5f;       // Time between spawns
     public Transform[] spawnPoints;        // Possible spawn locations
 
     private float timer;
 
-    void Update()
+    // Get spawn interval based on current difficulty
+    private float GetSpawnInterval()
     {
-        timer += Time.deltaTime;
-        if (timer >= spawnInterval)
+        switch (currentDifficulty)
         {
-            SpawnEnemy();
-            timer = 0f;
+            case DifficultyLevel.Easy: return 8f;
+            case DifficultyLevel.Medium: return 5f;
+            case DifficultyLevel.Hard: return 3f;
+            case DifficultyLevel.Boss: return 99f; // No regular enemies in boss mode
+            default: return 8f;
         }
     }
+
+    void Update()
+    {
+        // Only start spawning if enough enemies are alive
+        if (CountAliveEnemies() < 3)
+        {
+            timer += Time.deltaTime;
+            if (timer >= GetSpawnInterval())
+            {
+                SpawnEnemy();
+                timer = 0f;
+            }
+        }
+    }
+
+    // Count how many enemies are currently active in the scene
+    int CountAliveEnemies()
+    {
+        return GameObject.FindGameObjectsWithTag("Enemy").Length;
+    }
+
 
     void SpawnEnemy()
     {
@@ -69,6 +96,10 @@ public class SC_EnemySpawner : MonoBehaviour
         }
         // not founded after 5 attemts
         //Debug.Log("[EnemySpawner] No available space to spawn enemy.");
+    }
+    public void SetDifficulty(DifficultyLevel level)
+    {
+        currentDifficulty = level;
     }
 
 

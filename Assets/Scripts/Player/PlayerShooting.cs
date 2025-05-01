@@ -1,31 +1,35 @@
 ﻿using UnityEngine;
 
-// This script handles player shooting behavior with automatic firing when holding spacebar
+// This script handles player shooting, power-up mechanics, and shield blocking
 public class PlayerShooting : MonoBehaviour
 {
+    [Header("Shooting Settings")]
     public Transform shootPoint;         // Where the projectile spawns
-    public float shootForce = 15f;        // Speed of the projectile
-    public float cooldown = 0.2f;         // Delay between shots (lower = faster shooting)
-    private SC_PlayerHealthSystem playerHealth; // for the isBlocking option
-    public int killCount = 0;       // ammaount of enemy being killed
-    public bool poweredUp = false;  // is the projectile are stronger
-    private float powerUpTimer = 0f; // time to have a strong projectiles
-    public float powerUpDuration = 30f; // the time to have a strong projectiles (30s)
+    public float shootForce = 15f;       // Speed of the projectile
+    public float cooldown = 0.2f;        // Delay between shots (lower = faster shooting)
 
+    [Header("Power-Up Settings")]
+    public int killCount = 0;            // Number of enemies killed (0-4 only for boost)
+    public bool poweredUp = false;       // Whether stronger projectiles are active
+    private float powerUpTimer = 0f;     // Timer for remaining boost time
+    public float powerUpDuration = 30f;  // Duration of the power-up in seconds
 
-    private float lastShotTime = -999f;
-    private PlayerProjectilePool projectilePool;
+    public int score = 0;                // Total number of enemies defeated (for score)
+
+    private float lastShotTime = -999f;  // Time of last shot
+    private PlayerProjectilePool projectilePool;      // Object pool for player projectiles
+    private SC_PlayerHealthSystem playerHealth;       // Reference to player health (for shield state)
 
     void Start()
     {
-        // Find the object pool manager in the scene
+        // Find the projectile pool and player health system in the scene
         projectilePool = FindObjectOfType<PlayerProjectilePool>();
         playerHealth = FindObjectOfType<SC_PlayerHealthSystem>();
     }
 
     void Update()
     {
-        // Check is the player is blocking (shild on)
+        // Toggle blocking mode using 'S' key
         if (Input.GetKeyDown(KeyCode.S))
         {
             playerHealth.isBlocking = true;
@@ -34,56 +38,62 @@ public class PlayerShooting : MonoBehaviour
         {
             playerHealth.isBlocking = false;
         }
-        // Check if the Space key is being held and enough time passed since last shot
+
+        // Shoot if spacebar is held, enough time has passed, and the player is not blocking
         if (!playerHealth.isBlocking && Input.GetKey(KeyCode.Space) && Time.time > lastShotTime + cooldown)
         {
             Shoot();
             lastShotTime = Time.time;
         }
 
-        // if the player has power will count down the time
+        // Update power-up timer
         if (poweredUp)
         {
             powerUpTimer -= Time.deltaTime;
+
+            // Disable power-up when timer ends
             if (powerUpTimer <= 0f)
             {
                 poweredUp = false;
             }
         }
+
+        // Update HUD boost timer
+        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        if (hud != null)
+        {
+            hud.UpdateBoostTime(poweredUp ? powerUpTimer : 0f);
+        }
     }
 
+    // Called when the player reaches the kill threshold for power-up
     public void ActivatePowerUp()
     {
         poweredUp = true;
         powerUpTimer = powerUpDuration;
+
+        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        if (hud != null)
+        {
+            hud.UpdateBoostTime(powerUpTimer);
+        }
     }
 
-
+    // Shoot a projectile using the pool
     void Shoot()
     {
         // Get a projectile from the pool
         GameObject projectile = projectilePool.GetNextProjectile();
 
-        // Position and rotate the projectile at the shoot point
+        // Set projectile position and rotation to match shoot point
         projectile.transform.position = shootPoint.position;
         projectile.transform.rotation = shootPoint.rotation;
 
-        // Activate the projectile
+        // Activate the projectile in the scene
         projectile.SetActive(true);
 
-        // Apply velocity to the projectile in the forward direction
+        // Apply velocity to the projectile
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         rb.velocity = shootPoint.forward * shootForce;
-
-        // if the power is on the damage will be greater
-        SC_MagicProjectile magic = projectile.GetComponent<SC_MagicProjectile>();
-        if (magic != null)
-        {
-            if (poweredUp)
-                magic.damage = 35f; // במקום 25
-            else
-                magic.damage = 25f;
-        }
     }
 }
-

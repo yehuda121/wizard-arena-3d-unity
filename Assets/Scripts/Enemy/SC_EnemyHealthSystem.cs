@@ -3,8 +3,8 @@
 public class SC_EnemyHealthSystem : MonoBehaviour
 {
     public float maxHealth = 100f;               // The maximum health value
-    private float currentHealth;                 // Tracks current health value during gameplay
 
+    private float currentHealth;                 // Tracks current health value during gameplay
     private SC_EnemyHealthBar healthBar;         // Reference to the attached enemy health bar
 
     void Start()
@@ -75,7 +75,7 @@ public class SC_EnemyHealthSystem : MonoBehaviour
     {
         currentHealth = maxHealth;
 
-        // אם אין HealthBar קיים (כי מחקו במוות) – ליצור חדש
+        // if the healthbar was deleted because of reuse of the object
         if (healthBar == null)
         {
             // Find the anchor point on the enemy
@@ -99,17 +99,14 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         }
         else
         {
-            // אם יש HealthBar אז רק לאפס אותו
+            // if the healthbar exist will reset him to full life
             healthBar.SetHealth(1f);
         }
     }
 
-
     // Called when the enemy dies
     void Die()
     {
-        //Debug.Log("[EnemyHealthSystem] Enemy died.");
-
         // Stop all motion
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
@@ -122,8 +119,37 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         if (healthBar != null)
             Destroy(healthBar.gameObject);
 
-        // Hide the enemy
+        // Count kill and update score
+        PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
+        if (playerShooting != null)
+        {
+            // Increase total score
+            playerShooting.score++;
+
+            // Update the score on HUD
+            SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+            if (hud != null)
+            {
+                hud.UpdateScore(playerShooting.score);
+            }
+
+            // Handle power-up activation (based on kill count)
+            if (!playerShooting.poweredUp)
+            {
+                playerShooting.killCount++;
+
+                if (playerShooting.killCount >= 4)
+                {
+                    playerShooting.killCount = 0;
+                    playerShooting.ActivatePowerUp();
+                }
+            }
+        }
+
+        // Deactivate enemy object (object pooling style)
         gameObject.SetActive(false);
     }
+
+
 }
 

@@ -1,41 +1,48 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// This script controls the health bar that appears above enemy heads.
+// It follows the enemy on screen and hides the bar when not visible to the camera.
 public class SC_EnemyHealthBar : MonoBehaviour
 {
-    public Image fillImage;        // Reference to the image component that fills the bar
-    public Transform target;       // The Transform (anchor point) the bar should follow
-    private CanvasGroup canvasGroup;
+    public Image fillImage;        // Reference to the fill image inside the health bar
+    public Transform target;       // The world-space anchor the bar should follow (usually above the enemy's head)
+
+    private CanvasGroup canvasGroup; // Used to control visibility of the bar via transparency
 
     void Start()
     {
-        // מוסיפים CanvasGroup כדי לשלוט על שקיפות
+        // Add CanvasGroup to allow fading in/out
         canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
     void Update()
     {
-        if (target == null)
+        // If target is gone or inactive — hide the bar
+        if (target == null || !target.gameObject.activeInHierarchy)
+        {
+            canvasGroup.alpha = 0f;
             return;
-        // Update the position of the health bar
+        }
+
+        // Update the screen position of the bar based on world position of the anchor
         transform.position = Camera.main.WorldToScreenPoint(target.position);
 
-        // Calculate the forward direction of the camera
+        // Calculate the direction from camera to the target
         Vector3 cameraForward = Camera.main.transform.forward;
         Vector3 dirToTarget = (target.position - Camera.main.transform.position).normalized;
 
-        // Calculate the angle between the camera's forward direction and the direction to the target
+        // Get the angle between camera forward and the target direction
         float angle = Vector3.Angle(cameraForward, dirToTarget);
 
-        // Check if the target is within the camera's field of view
-        bool isVisible = angle < 60f; // You can adjust to 70, 80, etc., if needed
+        // If enemy is in front of camera (within field of view) — show the bar
+        bool isVisible = angle < 60f;
 
-        // Show or hide the health bar based on visibility
         if (canvasGroup != null)
             canvasGroup.alpha = isVisible ? 1f : 0f;
     }
 
-
+    // Called when health changes (value between 0–1)
     public void SetHealth(float percent)
     {
         if (fillImage != null)

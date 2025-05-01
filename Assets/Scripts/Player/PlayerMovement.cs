@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;          // Forward movement speed
-    public float rotationSpeed = 120f;    // Rotation speed in degrees per second
+    public float rotationSpeed = 50f;    // Rotation speed in degrees per second
     public float wallDetectionDistance = 0.2f; // Distance to detect walls in front
 
     private Rigidbody rb;
