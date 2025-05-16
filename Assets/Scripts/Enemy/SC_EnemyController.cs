@@ -201,13 +201,13 @@ public class SC_EnemyController : MonoBehaviour
             switch (gameManager.currentDifficulty)
             {
                 case DifficultyLevel.Easy:
-                    nextFireTime = Random.Range(8f, 10f); // fixed per your request
+                    nextFireTime = Random.Range(5f, 10f); 
                     break;
                 case DifficultyLevel.Medium:
-                    nextFireTime = Random.Range(5f, 8f);
+                    nextFireTime = Random.Range(3f, 8f);
                     break;
                 case DifficultyLevel.Hard:
-                    nextFireTime = Random.Range(3f, 5f);
+                    nextFireTime = Random.Range(2f, 5f);
                     break;
                 default:
                     nextFireTime = Random.Range(5f, 10f);

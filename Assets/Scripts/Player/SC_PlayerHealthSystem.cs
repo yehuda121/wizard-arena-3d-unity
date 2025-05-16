@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SC_PlayerHealthSystem : MonoBehaviour
 {
@@ -22,17 +22,55 @@ public class SC_PlayerHealthSystem : MonoBehaviour
             Debug.LogWarning("PlayerHealthBar not found in scene!");
     }
 
+    //public void TakeDamage(float amount)
+    //{
+    //    // Check the current difficulty level from the GameManager
+    //    SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
+    //    if (gameManager != null)
+    //    {
+    //        return;
+    //    }
+    //    if (isBlocking &&  gameManager.currentDifficulty != DifficultyLevel.Boss)
+    //    {
+    //        // If blocking and not in Boss level then take no damage
+    //        return;
+    //    }
+
+    //    // Reduce health regardless of shield — the shield logic is handled externally
+    //    currentHealth -= amount;
+
+    //    float percent = Mathf.Clamp01(currentHealth / maxHealth);
+
+    //    if (healthBar != null)
+    //        healthBar.SetHealth(percent);
+
+    //    // Update the text on the screen
+    //    SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+    //    if (hud != null)
+    //        hud.UpdateHealth(currentHealth / maxHealth);
+
+    //    if (currentHealth <= 0f)
+    //    {
+    //        Die();
+    //    }
+    //}
     public void TakeDamage(float amount)
     {
-        // Check the current difficulty level from the GameManager
         SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
-        if (isBlocking && gameManager != null && gameManager.currentDifficulty != DifficultyLevel.Boss)
+
+        if (isBlocking)
         {
-            // If blocking and not in Boss level then take no damage
-            return;
+            if (gameManager != null && gameManager.currentDifficulty != DifficultyLevel.Boss)
+            {
+                return; // shield blocks all regular enemy damage
+            }
+
+            if (gameManager != null && gameManager.currentDifficulty == DifficultyLevel.Boss)
+            {
+                amount = 0.05f; // reduce boss damage from 35% to 5%
+            }
         }
 
-        // Reduce health regardless of shield � the shield logic is handled externally
         currentHealth -= amount;
 
         float percent = Mathf.Clamp01(currentHealth / maxHealth);
@@ -40,7 +78,6 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         if (healthBar != null)
             healthBar.SetHealth(percent);
 
-        // Update the text on the screen
         SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
         if (hud != null)
             hud.UpdateHealth(currentHealth / maxHealth);
@@ -50,6 +87,7 @@ public class SC_PlayerHealthSystem : MonoBehaviour
             Die();
         }
     }
+
 
     public void ResetToFull()
     {

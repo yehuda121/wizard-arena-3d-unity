@@ -30,7 +30,7 @@ public class SC_EnemySpawner : MonoBehaviour
     void Update()
     {
         // Only start spawning if enough enemies are alive
-        if (CountAliveEnemies() < 3)
+        if (CountAliveEnemies() < 4)
         {
             timer += Time.deltaTime;
             if (timer >= GetSpawnInterval())
