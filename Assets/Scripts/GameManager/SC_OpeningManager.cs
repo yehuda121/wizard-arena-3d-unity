@@ -16,7 +16,13 @@ public class SC_OpeningManager : MonoBehaviour
 
     void Start()
     {
-        //Debug.Log("Button assigned: " + (playButton != null));
+        bool skip = PlayerPrefs.GetInt("SkipOpeningVideo", 0) == 1;
+        if (skip)
+        {
+            PlayerPrefs.SetInt("SkipOpeningVideo", 0); // אפס את הדגל
+            ShowSettings(); // דלג על הווידאו
+            return;
+        }
 
         // Hide the settings panel at start
         settingsPanel.SetActive(false);
