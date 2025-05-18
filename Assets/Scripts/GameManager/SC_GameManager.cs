@@ -10,20 +10,20 @@ public class SC_GameManager : MonoBehaviour
     public Transform bossSpawnPoint;
     public SC_GameHUD gameHUD;
 
-    public GameObject pauseButton;       // נגרור מהיררכיה
-    public GameObject startOverButton;   // נגרור מהיררכיה
+    public GameObject pauseButton;       
+    public GameObject startOverButton;   
 
     private static bool isPaused = false;
 
     void Start()
     {
         SetDifficulty(DifficultyLevel.Easy);
-        ResumeGame(); // מבטיח שהמשחק יתחיל בריצה
+        ResumeGame(); 
     }
 
     void Update()
     {
-        if (isPaused) return; // לא נעדכן קושי כשמושהה
+        if (isPaused) return; 
 
         PlayerShooting player = FindObjectOfType<PlayerShooting>();
         if (player == null) return;
