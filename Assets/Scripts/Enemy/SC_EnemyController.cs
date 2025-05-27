@@ -1,158 +1,29 @@
-﻿//using UnityEngine;
-
-//public class SC_EnemyController : MonoBehaviour
-//{
-//    [Header("Movement Settings")]
-//    public float moveSpeed = 1f;             // Movement speed of the enemy
-//    public float stopDistance = 8f;          // Stop approaching the player when this close
-
-//    [Header("Avoidance Settings")]
-//    public float avoidRadius = 8f;           // How far to check for nearby enemies to avoid
-//    public LayerMask enemyLayer;             // Only consider other enemies for avoidance
-
-//    [Header("Shooting Settings")]
-//    public Transform shootPoint;             // The point the projectile spawns from
-//    private float fireTimer = 0f;            // Time passed since last shot
-//    private float nextFireTime = 0f;         // Time to wait before next shot
-
-//    private Transform player;                // Reference to the player’s transform
-//    private EnemyProjectilePool projectilePool;  // Reference to the projectile object pool
-
-//    void Start()
-//    {
-//        // Find the player in the scene by tag
-//        player = GameObject.FindWithTag("Player")?.transform;
-
-//        if (player == null)
-//        {
-//            Debug.LogWarning("[EnemyController] Player not found in scene!");
-//        }
-
-//        // Get reference to the projectile pool in the scene
-//        projectilePool = FindObjectOfType<EnemyProjectilePool>();
-
-//        // Set initial fire delay between 5–15 seconds
-//        nextFireTime = Random.Range(5f, 15f);
-//    }
-
-//    void Update()
-//    {
-//        if (player == null) return;
-
-//        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-//        // Move toward the player if not too close
-//        if (distanceToPlayer > stopDistance)
-//        {
-//            Vector3 moveDirection = (player.position - transform.position).normalized;
-//            Vector3 avoidance = CalculateAvoidance();
-
-//            float avoidanceStrength = 1.2f;
-//            Vector3 finalDirection = (moveDirection + avoidance * avoidanceStrength).normalized;
-
-//            Vector3 nextPosition = transform.position + finalDirection * moveSpeed * Time.deltaTime;
-//            nextPosition.y = transform.position.y;
-
-//            transform.position = nextPosition;
-//        }
-
-//        // Shooting logic with randomized delay
-//        fireTimer += Time.deltaTime;
-
-//        if (fireTimer >= nextFireTime)
-//        {
-//            fireTimer = 0f;
-//            nextFireTime = Random.Range(5f, 15f); // Next delay
-//            Shoot();
-//        }
-//    }
-
-//    void Shoot()
-//    {
-//        if (projectilePool == null || shootPoint == null || player == null)
-//            return;
-
-//        // Calculate the direction of the player to shoot
-//        Vector3 targetPosition = player.position;
-//        //targetPosition.y -= 1f; // Adjust target position slightly lower
-//        Vector3 direction = (targetPosition - shootPoint.position).normalized;
-
-//        // Get a projectile from the pool
-//        GameObject proj = projectilePool.GetNextProjectile();
-//        // Making shur that there is no valocity from previous shooting
-//        Rigidbody rb = proj.GetComponent<Rigidbody>();
-//        rb.isKinematic = false;
-//        rb.detectCollisions = true;
-//        rb.velocity = Vector3.zero;
-//        rb.angularVelocity = Vector3.zero;
-//        rb.drag = 0f;
-//        rb.angularDrag = 0f;
-
-//        proj.transform.position = shootPoint.position;
-//        proj.transform.rotation = Quaternion.LookRotation(direction); // Rotate the projectile turds the player
-
-//        // Gives speed to the projectile
-//        rb.velocity = direction * 10f;
-
-//        proj.SetActive(true);
-
-//        // Drow a red line to see if the projectile hit the player for debaging
-//        Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
-//    }
-
-//    // Calculate avoidance vector to prevent overlapping with other enemies
-//    Vector3 CalculateAvoidance()
-//    {
-//        // Initialize the avoidance vector
-//        Vector3 avoidance = Vector3.zero;
-//        // Find all enemies within the avoidRadius
-//        Collider[] hits = Physics.OverlapSphere(transform.position, avoidRadius, enemyLayer);
-
-//        foreach (Collider hit in hits)
-//        {
-//            if (hit.gameObject != gameObject)// Ignore self
-//            {
-//                // Direction away from the other enemy
-//                Vector3 pushDir = transform.position - hit.transform.position;
-//                // Distance to the other enemy
-//                float distance = pushDir.magnitude;
-
-//                if (distance > 0)
-//                {
-//                    // Weighted push based on distance
-//                    avoidance += pushDir.normalized / distance;
-//                }
-//            }
-//        }
-
-//        return avoidance;
-//    }
-//}
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SC_EnemyController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 1f;
-    public float stopDistance = 8f;
+    public float moveSpeed = 1f;               // Movement speed of the enemy
+    public float stopDistance = 8f;            // Minimum distance to stop moving toward the player
 
     [Header("Avoidance Settings")]
-    public float avoidRadius = 8f;
-    public LayerMask enemyLayer;
+    public float avoidRadius = 8f;             // Radius to detect nearby enemies to avoid overlapping
+    public LayerMask enemyLayer;               // Layer used to detect other enemies
 
     [Header("Shooting Settings")]
-    public Transform shootPoint;
-    private float fireTimer = 0f;
-    private float nextFireTime = 0f;
+    public Transform shootPoint;               // The point where projectiles are spawned
+    private float fireTimer = 0f;              // Time counter between shots
+    private float nextFireTime = 0f;           // Time to wait before the next shot
 
-    private Transform player;
-    private EnemyProjectilePool projectilePool;
-    private SC_GameManager gameManager;
+    private Transform player;                  // Reference to the player's position
+    private EnemyProjectilePool projectilePool; // Reference to projectile object pool
+    private SC_GameManager gameManager;        // Reference to the GameManager
+    private SC_EnemyAnimator enemyAnimator;    // Reference to the enemy animator script
 
     void Start()
     {
+        // Get references
         player = GameObject.FindWithTag("Player")?.transform;
-
         if (player == null)
         {
             Debug.LogWarning("[EnemyController] Player not found in scene!");
@@ -160,6 +31,7 @@ public class SC_EnemyController : MonoBehaviour
 
         projectilePool = FindObjectOfType<EnemyProjectilePool>();
         gameManager = FindObjectOfType<SC_GameManager>();
+        enemyAnimator = GetComponent<SC_EnemyAnimator>();
 
         SetInitialFireDelay();
     }
@@ -168,32 +40,66 @@ public class SC_EnemyController : MonoBehaviour
     {
         if (player == null) return;
 
+        // === DISTANCE TO PLAYER ===
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Movement
-        if (distanceToPlayer > stopDistance)
+        // Determine whether the enemy should walk or stop
+        bool shouldWalk = distanceToPlayer > stopDistance;
+        //Debug.Log("Speed = " + (shouldWalk ? "WALKING" : "IDLE"));
+
+        // Set walking animation (true if moving, false if idle)
+        if (enemyAnimator != null)
         {
-            Vector3 moveDirection = (player.position - transform.position).normalized;
-            Vector3 avoidance = CalculateAvoidance();
-            float avoidanceStrength = 1.2f;
-
-            Vector3 finalDirection = (moveDirection + avoidance * avoidanceStrength).normalized;
-            Vector3 nextPosition = transform.position + finalDirection * moveSpeed * Time.deltaTime;
-            nextPosition.y = transform.position.y;
-
-            transform.position = nextPosition;
+            enemyAnimator.SetWalking(shouldWalk);
         }
 
-        // Shooting
+        // === MOVEMENT LOGIC ===
+        if (shouldWalk)
+        {
+            // Calculate direction toward the player
+            Vector3 moveDirection = (player.position - transform.position).normalized;
+
+            // Calculate avoidance from nearby enemies
+            Vector3 avoidance = CalculateAvoidance();
+            float avoidanceStrength = 3f;
+
+            // Combine movement and avoidance
+            Vector3 finalDirection = (moveDirection + avoidance * avoidanceStrength).normalized;
+
+            // Smoothly rotate to face movement direction
+            if (finalDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(finalDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            }
+
+            // Move the enemy forward
+            Vector3 moveDelta = finalDirection * moveSpeed * Time.deltaTime;
+            transform.position += moveDelta;
+        }
+
+        // === SHOOTING LOGIC ===
         fireTimer += Time.deltaTime;
+
+        // Fire projectile when delay has passed
         if (fireTimer >= nextFireTime)
         {
             fireTimer = 0f;
             Shoot();
             SetNextFireDelay();
         }
+        
+        // Only clamp Y position if enemy is alive and on ground
+        if (isActiveAndEnabled) // Avoids clamping dead/falling enemies
+        {
+            Vector3 pos = transform.position;
+            pos.y = -0.5f; // depending on your floor
+            transform.position = pos;
+        }
     }
 
+
+    // Sets the initial fire delay based on current difficulty
     void SetInitialFireDelay()
     {
         if (gameManager != null)
@@ -201,7 +107,7 @@ public class SC_EnemyController : MonoBehaviour
             switch (gameManager.currentDifficulty)
             {
                 case DifficultyLevel.Easy:
-                    nextFireTime = Random.Range(5f, 10f); 
+                    nextFireTime = Random.Range(5f, 10f);
                     break;
                 case DifficultyLevel.Medium:
                     nextFireTime = Random.Range(3f, 8f);
@@ -220,23 +126,27 @@ public class SC_EnemyController : MonoBehaviour
         }
     }
 
+    // Used after each shot to determine delay until next shot
     void SetNextFireDelay()
     {
-        // Same as SetInitialFireDelay — use this after each shot
         SetInitialFireDelay();
     }
 
+    // Fires a projectile toward the player
     void Shoot()
     {
         if (projectilePool == null || shootPoint == null || player == null)
             return;
 
+        // Play attack animation
+        if (enemyAnimator != null) enemyAnimator.PlayAttack();
+
         Vector3 targetPosition = player.position;
         Vector3 direction = (targetPosition - shootPoint.position).normalized;
 
         GameObject proj = projectilePool.GetNextProjectile();
-
         Rigidbody rb = proj.GetComponent<Rigidbody>();
+
         rb.isKinematic = false;
         rb.detectCollisions = true;
         rb.velocity = Vector3.zero;
@@ -250,9 +160,37 @@ public class SC_EnemyController : MonoBehaviour
 
         proj.SetActive(true);
 
-        Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
+        //Debug.DrawRay(shootPoint.position, direction * 10f, Color.red, 2f);
+
+        // Restart walking if needed
+        if (enemyAnimator != null && Vector3.Distance(transform.position, player.position) > stopDistance)
+        {
+            enemyAnimator.SetWalking(true);
+        }
     }
 
+    // Calculates a movement vector that avoids overlapping other enemies
+    //Vector3 CalculateAvoidance()
+    //{
+    //    Vector3 avoidance = Vector3.zero;
+    //    Collider[] hits = Physics.OverlapSphere(transform.position, avoidRadius, enemyLayer);
+
+    //    foreach (Collider hit in hits)
+    //    {
+    //        if (hit.gameObject != gameObject)
+    //        {
+    //            Vector3 pushDir = transform.position - hit.transform.position;
+    //            float distance = pushDir.magnitude;
+
+    //            if (distance > 0)
+    //            {
+    //                avoidance += pushDir.normalized / distance;
+    //            }
+    //        }
+    //    }
+
+    //    return avoidance;
+    //}
     Vector3 CalculateAvoidance()
     {
         Vector3 avoidance = Vector3.zero;
@@ -262,17 +200,19 @@ public class SC_EnemyController : MonoBehaviour
         {
             if (hit.gameObject != gameObject)
             {
-                Vector3 pushDir = transform.position - hit.transform.position;
-                float distance = pushDir.magnitude;
+                Vector3 offset = transform.position - hit.transform.position;
+                float distance = offset.magnitude;
 
-                if (distance > 0)
+                if (distance > 0f)
                 {
-                    avoidance += pushDir.normalized / distance;
+                    // דחיפה אחורית + דחיפה לצד (ב־90 מעלות)
+                    Vector3 sideStep = Vector3.Cross(offset.normalized, Vector3.up);
+                    avoidance += (offset.normalized + sideStep * 0.5f) / distance;
                 }
             }
         }
 
         return avoidance;
     }
-}
 
+}

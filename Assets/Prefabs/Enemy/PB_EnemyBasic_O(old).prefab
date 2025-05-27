@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: -2700136481407651476}
   - component: {fileID: 2747381706704456395}
   m_Layer: 8
-  m_Name: PB_EnemyBasic_O
+  m_Name: PB_EnemyBasic_O(old)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,7 +93,7 @@ Transform:
   m_GameObject: {fileID: 8727958998559635932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.67, y: 1, z: -3.44}
+  m_LocalPosition: {x: -10.67, y: 3, z: -3.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

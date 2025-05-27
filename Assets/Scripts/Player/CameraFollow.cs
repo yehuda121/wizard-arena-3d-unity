@@ -3,8 +3,8 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform target;  // The follow target (CameraFollowTarget)
-    public Vector3 normalOffset = new Vector3(0, 2, -5); // third-person
-    public Vector3 aimOffset = new Vector3(0, 1.6f, 0.2f); // first-person
+    public Vector3 normalOffset = new Vector3(0, 4, -4); // third-person
+    public Vector3 aimOffset = new Vector3(0, 4f, 6f); // first-person
     public float smoothSpeed = 10f;
 
     private bool isAiming = false;
