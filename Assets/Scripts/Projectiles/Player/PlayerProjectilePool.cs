@@ -27,6 +27,9 @@ public class PlayerProjectilePool : MonoBehaviour
     public GameObject GetNextProjectile()
     {
         GameObject p = projectiles[currentIndex];
+        //Debug.Log("GetNextProjectile called: index " + currentIndex);
+        p.SetActive(false); 
+        p.SetActive(true); 
         currentIndex = (currentIndex + 1) % poolSize;
         return p;
     }

@@ -26,7 +26,7 @@ public class SC_WizardAnimator : MonoBehaviour
     {
         if (animator != null)
         {
-            Debug.Log("isShielding animator activated");
+            //Debug.Log("isShielding animator activated");
             animator.SetBool("isShielding", isShielding);
         }
     }
@@ -36,7 +36,7 @@ public class SC_WizardAnimator : MonoBehaviour
     {
         if (animator != null)
         {
-            Debug.Log("attac animator activated");
+            //Debug.Log("attac animator activated");
             animator.SetTrigger("attack");
         }
     }
@@ -46,7 +46,7 @@ public class SC_WizardAnimator : MonoBehaviour
     {
         if (animator != null)
         {
-            Debug.Log("die animator activated");
+            //Debug.Log("die animator activated");
             animator.SetTrigger("die");
         }
     }

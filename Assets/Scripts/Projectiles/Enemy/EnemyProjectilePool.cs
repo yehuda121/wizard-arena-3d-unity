@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyProjectilePool : MonoBehaviour
 {
     public GameObject projectilePrefab;
-    public int poolSize = 30;
+    public int poolSize = 20;
 
     private List<GameObject> projectiles;
     private int currentIndex = 0;
@@ -32,9 +32,9 @@ public class EnemyProjectilePool : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Projectile already active at index: " + currentIndex + ". Forcing reset.");
-            p.SetActive(false); // קודם לכבות
-            p.SetActive(true);  // ואז להפעיל מחדש
+            //Debug.LogWarning("Projectile already active at index: " + currentIndex + ". Forcing reset.");
+            p.SetActive(false); 
+            p.SetActive(true); 
         }
 
         currentIndex = (currentIndex + 1) % poolSize;

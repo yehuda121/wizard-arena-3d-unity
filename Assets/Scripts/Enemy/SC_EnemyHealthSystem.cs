@@ -1,105 +1,120 @@
 ﻿//using UnityEngine;
+//using System.Collections;
 
 //public class SC_EnemyHealthSystem : MonoBehaviour
 //{
 //    public float maxHealth = 100f;               // The maximum health value
 
-//    private float currentHealth;                 // Tracks current health value during gameplay
-//    private SC_EnemyHealthBar healthBar;         // Reference to the attached enemy health bar
+//    private float currentHealth;                 // Tracks current health during gameplay
+//    private SC_EnemyHealthBar healthBar;         // Reference to the instantiated health bar
+
+//    [Header("References")]
+//    public GameObject enemyHealthBarPrefab;      // Prefab for the health bar
+//    public Transform healthBarAnchor;            // The point on the enemy where the health bar should follow
+//    public Transform healthCanvas;               // The world-space canvas where the health bar will be attached
+
+//    //void Start()
+//    //{
+//    //    currentHealth = maxHealth;
+
+//    //    // Fallback: Try to find canvas by name if not assigned
+//    //    if (healthCanvas == null)
+//    //    {
+//    //        GameObject canvasObj = GameObject.Find("UI_HealthEnemy");
+//    //        if (canvasObj != null)
+//    //        {
+//    //            healthCanvas = canvasObj.transform;
+//    //        }
+//    //    }
+
+
+//    //    Canvas canvas = GetComponentInChildren<Canvas>();
+//    //    if (canvas != null && canvas.renderMode == RenderMode.WorldSpace)
+//    //    {
+//    //        canvas.worldCamera = Camera.main;
+//    //    }
+
+//    //    // Validate references
+//    //    if (enemyHealthBarPrefab == null)
+//    //        Debug.LogWarning("[ResetEnemy] enemyHealthBarPrefab is NULL!");
+//    //    if (healthCanvas == null)
+//    //        Debug.LogWarning("[ResetEnemy] healthCanvas is NULL!");
+//    //    if (healthBarAnchor == null)
+//    //        Debug.LogWarning("[ResetEnemy] HealthBarAnchor is NULL!");
+
+
+//    //    // Instantiate the health bar under the canvas
+//    //    GameObject hbInstance = Instantiate(enemyHealthBarPrefab, healthCanvas);
+
+//    //    // Get the health bar script component
+//    //    healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
+
+//    //    // Attach the health bar to the enemy's anchor point
+//    //    if (healthBar != null)
+//    //    {
+//    //        healthBar.target = healthBarAnchor;  
+//    //        healthBar.SetHealth(1f); // Full health on start
+//    //    }
+//    //}
 
 //    void Start()
 //    {
-//        // Set starting health
 //        currentHealth = maxHealth;
 
-//        // Find the anchor point on the enemy used to position the health bar
-//        Transform anchor = transform.Find("HealthBarAnchor");
+//        healthBar = GetComponentInChildren<SC_EnemyHealthBar>();
 
-//        // Load the EnemyHealthBar prefab from the Resources folder
-//        GameObject hbPrefab = Resources.Load<GameObject>("EnemyHealthBar");
-
-//        // Find the canvas where enemy health bars should appear
-//        GameObject healthCanvas = GameObject.Find("UI_HealthEnemy");
-
-//        // Validate references
-//        if (hbPrefab == null)
-//        {
-//            Debug.LogError("EnemyHealthBar prefab not found in Resources!");
-//            return;
-//        }
-
-//        if (healthCanvas == null)
-//        {
-//            Debug.LogError("UI_HealthEnemy canvas not found in scene!");
-//            return;
-//        }
-
-//        if (anchor == null)
-//        {
-//            Debug.LogError("HealthBarAnchor not found inside enemy prefab!");
-//            return;
-//        }
-
-//        // Instantiate health bar under the enemy health canvas
-//        GameObject hbInstance = Instantiate(hbPrefab, healthCanvas.transform);
-
-//        // Get the SC_EnemyHealthBar component from the prefab
-//        healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
-
-//        // Link the bar to the enemy's anchor
 //        if (healthBar != null)
 //        {
-//            healthBar.target = anchor;
-//            healthBar.SetHealth(1f); // full health
+//            healthBar.target = healthBarAnchor;
+//            healthBar.SetHealth(1f);
 //        }
 //    }
 
-//    // Call this method to apply damage to the enemy
+
+//    // Method to apply damage
 //    public void TakeDamage(float amount)
 //    {
-//        //Debug.Log("Enemy took damage: " + amount);
 //        currentHealth -= amount;
+//        //Debug.Log($"Enemy took {amount} damage. Current: {currentHealth}");
 
-//        // Update the health bar fill
+//        // Update health bar fill
 //        float percent = Mathf.Clamp01(currentHealth / maxHealth);
 //        if (healthBar != null)
 //            healthBar.SetHealth(percent);
 
-//        // Kill the enemy if health is depleted
+//        // Check for death
 //        if (currentHealth <= 0f)
 //        {
 //            Die();
 //        }
 //    }
+
+//    // Method to reset enemy (e.g. from object pool)
 //    public void ResetEnemy()
 //    {
 //        currentHealth = maxHealth;
 
-//        // if the healthbar was deleted because of reuse of the object
+//        // If health bar was destroyed, re-create it
 //        if (healthBar == null)
 //        {
-//            // Find the anchor point on the enemy
-//            Transform anchor = transform.Find("HealthBarAnchor");
-
-//            // Load the EnemyHealthBar prefab from the Resources folder
-//            GameObject hbPrefab = Resources.Load<GameObject>("EnemyHealthBar");
-//            GameObject healthCanvas = GameObject.Find("UI_HealthEnemy");
-
-//            if (hbPrefab != null && healthCanvas != null && anchor != null)
-//            {
-//                GameObject hbInstance = Instantiate(hbPrefab, healthCanvas.transform);
-//                healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
-//                healthBar.target = anchor;
-//                healthBar.SetHealth(1f); // full health
-//            }
-//            else
+//            if (enemyHealthBarPrefab == null || healthCanvas == null || healthBarAnchor == null)
 //            {
 //                Debug.LogWarning("[ResetEnemy] Missing references!");
+//                return;
+//            }
+
+//            GameObject hbInstance = Instantiate(enemyHealthBarPrefab, healthCanvas);
+//            healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
+
+//            if (healthBar != null)
+//            {
+//                healthBar.target = healthBarAnchor;
+//                healthBar.SetHealth(1f);
 //            }
 //        }
 //        else
 //        {
-//            // if the healthbar exist will reset him to full life
+//            // Reset fill to full health
 //            healthBar.SetHealth(1f);
 //        }
 //    }
@@ -107,7 +122,7 @@
 //    // Called when the enemy dies
 //    void Die()
 //    {
-//        // Stop all motion
+//        // Stop physics movement
 //        Rigidbody rb = GetComponent<Rigidbody>();
 //        if (rb != null)
 //        {
@@ -122,29 +137,23 @@
 //            animator.PlayDeath();
 //        }
 
-//        // Remove the health bar from UI
+//        // Destroy health bar UI
 //        if (healthBar != null)
 //            Destroy(healthBar.gameObject);
 
-//        // Count kill and update score
+//        // Update score and power-up system
 //        PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
 //        if (playerShooting != null)
 //        {
-//            // Increase total score
 //            playerShooting.score++;
 
-//            // Update the score on HUD
 //            SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
 //            if (hud != null)
-//            {
 //                hud.UpdateScore(playerShooting.score);
-//            }
 
-//            // Handle power-up activation (based on kill count)
 //            if (!playerShooting.poweredUp)
 //            {
 //                playerShooting.killCount++;
-
 //                if (playerShooting.killCount >= 4)
 //                {
 //                    playerShooting.killCount = 0;
@@ -153,81 +162,54 @@
 //            }
 //        }
 
-//        // Deactivate enemy object (object pooling style)
-//        gameObject.SetActive(false);
+//        // Start coroutine to disable object after short delay
+//        StartCoroutine(DisableAfterDelay(3f));
 //    }
 
-
+//    // Coroutine to delay object deactivation
+//    private IEnumerator DisableAfterDelay(float delaySeconds)
+//    {
+//        yield return new WaitForSeconds(delaySeconds);
+//        gameObject.SetActive(false);
+//    }
 //}
 
+
 using UnityEngine;
-using System.Collections; // Needed for Coroutine
+using System.Collections;
 
 public class SC_EnemyHealthSystem : MonoBehaviour
 {
-    public float maxHealth = 100f;               // The maximum health value
+    public float maxHealth = 100f;
 
-    private float currentHealth;                 // Tracks current health value during gameplay
-    private SC_EnemyHealthBar healthBar;         // Reference to the attached enemy health bar
+    private float currentHealth;
+    private SC_EnemyHealthBar healthBar;
+
+    [Header("References")]
+    public GameObject enemyHealthBarPrefab;
+    public Transform healthBarAnchor;
+    public Transform healthCanvas;
 
     void Start()
     {
-        // Set starting health
         currentHealth = maxHealth;
 
-        // Find the anchor point on the enemy used to position the health bar
-        Transform anchor = transform.Find("HealthBarAnchor");
-
-        // Load the EnemyHealthBar prefab from the Resources folder
-        GameObject hbPrefab = Resources.Load<GameObject>("EnemyHealthBar");
-
-        // Find the canvas where enemy health bars should appear
-        GameObject healthCanvas = GameObject.Find("UI_HealthEnemy");
-
-        // Validate references
-        if (hbPrefab == null)
-        {
-            Debug.LogError("EnemyHealthBar prefab not found in Resources!");
-            return;
-        }
-
-        if (healthCanvas == null)
-        {
-            Debug.LogError("UI_HealthEnemy canvas not found in scene!");
-            return;
-        }
-
-        if (anchor == null)
-        {
-            Debug.LogError("HealthBarAnchor not found inside enemy prefab!");
-            return;
-        }
-
-        // Instantiate health bar under the enemy health canvas
-        GameObject hbInstance = Instantiate(hbPrefab, healthCanvas.transform);
-
-        // Get the SC_EnemyHealthBar component from the prefab
-        healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
-
-        // Link the bar to the enemy's anchor
+        healthBar = GetComponentInChildren<SC_EnemyHealthBar>();
         if (healthBar != null)
         {
-            healthBar.target = anchor;
-            healthBar.SetHealth(1f); // full health
+            healthBar.target = healthBarAnchor;
+            healthBar.SetHealth(1f);
         }
     }
 
-    // Call this method to apply damage to the enemy
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
 
-        // Update the health bar fill
         float percent = Mathf.Clamp01(currentHealth / maxHealth);
         if (healthBar != null)
             healthBar.SetHealth(percent);
 
-        // Kill the enemy if health is depleted
         if (currentHealth <= 0f)
         {
             Die();
@@ -240,34 +222,29 @@ public class SC_EnemyHealthSystem : MonoBehaviour
 
         if (healthBar == null)
         {
-            // If the health bar was destroyed, recreate it
-            Transform anchor = transform.Find("HealthBarAnchor");
-            GameObject hbPrefab = Resources.Load<GameObject>("EnemyHealthBar");
-            GameObject healthCanvas = GameObject.Find("UI_HealthEnemy");
-
-            if (hbPrefab != null && healthCanvas != null && anchor != null)
-            {
-                GameObject hbInstance = Instantiate(hbPrefab, healthCanvas.transform);
-                healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
-                healthBar.target = anchor;
-                healthBar.SetHealth(1f); // full health
-            }
-            else
+            if (enemyHealthBarPrefab == null || healthCanvas == null || healthBarAnchor == null)
             {
                 Debug.LogWarning("[ResetEnemy] Missing references!");
+                return;
+            }
+
+            GameObject hbInstance = Instantiate(enemyHealthBarPrefab, healthCanvas);
+            healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
+
+            if (healthBar != null)
+            {
+                healthBar.target = healthBarAnchor;
+                healthBar.SetHealth(1f);
             }
         }
         else
         {
-            // Reset existing health bar
             healthBar.SetHealth(1f);
         }
     }
 
-    // Called when the enemy dies
     void Die()
     {
-        // Stop all motion
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -275,18 +252,22 @@ public class SC_EnemyHealthSystem : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        // Play death animation
         SC_EnemyAnimator animator = GetComponent<SC_EnemyAnimator>();
         if (animator != null)
         {
             animator.PlayDeath();
         }
 
-        // Remove the health bar from UI
+        // Inform controller to stop movement and shooting after death
+        SC_EnemyController controller = GetComponent<SC_EnemyController>();
+        if (controller != null)
+        {
+            controller.Die();
+        }
+
         if (healthBar != null)
             Destroy(healthBar.gameObject);
 
-        // Update game stats
         PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
         if (playerShooting != null)
         {
@@ -294,15 +275,11 @@ public class SC_EnemyHealthSystem : MonoBehaviour
 
             SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
             if (hud != null)
-            {
                 hud.UpdateScore(playerShooting.score);
-            }
 
-            // Handle power-up system
             if (!playerShooting.poweredUp)
             {
                 playerShooting.killCount++;
-
                 if (playerShooting.killCount >= 4)
                 {
                     playerShooting.killCount = 0;
@@ -311,14 +288,13 @@ public class SC_EnemyHealthSystem : MonoBehaviour
             }
         }
 
-        // Wait a few seconds before deactivating the object to allow death animation to play
         StartCoroutine(DisableAfterDelay(3f));
     }
 
-    // Delays deactivation to let the death animation finish playing
     private IEnumerator DisableAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);
         gameObject.SetActive(false);
     }
 }
+

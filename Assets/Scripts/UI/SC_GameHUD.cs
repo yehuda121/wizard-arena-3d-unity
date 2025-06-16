@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SC_GameHUD : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class SC_GameHUD : MonoBehaviour
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI stageText;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI MainMenuText;
 
     private float elapsedTime = 0f;
 
@@ -24,6 +26,7 @@ public class SC_GameHUD : MonoBehaviour
         else
             boostText.text = "Boost: 0";
     }
+
     public void UpdateScore(int score)
     {
         if (scoreText != null)

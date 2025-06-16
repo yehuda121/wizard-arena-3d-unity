@@ -2,6 +2,7 @@
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class SC_OpeningManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class SC_OpeningManager : MonoBehaviour
 
     [Header("Video Settings")]
     public VideoPlayer videoPlayer;      // The video player component
+    public TMP_Dropdown difficultyDropdown;  // TMP
 
     private bool settingsShown = false;  // Ensures settings panel is only shown once
 
@@ -19,8 +21,13 @@ public class SC_OpeningManager : MonoBehaviour
         bool skip = PlayerPrefs.GetInt("SkipOpeningVideo", 0) == 1;
         if (skip)
         {
-            PlayerPrefs.SetInt("SkipOpeningVideo", 0); // אפס את הדגל
-            ShowSettings(); // דלג על הווידאו
+            if (difficultyDropdown != null)
+            {
+                difficultyDropdown.value = PlayerPrefs.GetInt("SelectedDifficulty", 0);
+            }
+
+            PlayerPrefs.SetInt("SkipOpeningVideo", 0); 
+            ShowSettings();
             return;
         }
 
@@ -55,6 +62,17 @@ public class SC_OpeningManager : MonoBehaviour
         ShowSettings();
     }
 
+    public void SkipVideo()
+    {
+        if (difficultyDropdown != null)
+        {
+            difficultyDropdown.value = PlayerPrefs.GetInt("SelectedDifficulty", 0);
+        }
+
+        ShowSettings();
+    }
+
+
     // Show the settings panel (only once)
     void ShowSettings()
     {
@@ -68,6 +86,12 @@ public class SC_OpeningManager : MonoBehaviour
     // Called when the play button is clicked
     public void OnPlayButtonClick()
     {
+        if (difficultyDropdown != null)
+        {
+            PlayerPrefs.SetInt("SelectedDifficulty", difficultyDropdown.value);
+            PlayerPrefs.Save();
+        }
+
         Debug.Log("Play button clicked!");
         SceneManager.LoadScene("MainArena");
     }

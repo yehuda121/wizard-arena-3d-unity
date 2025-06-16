@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyProjectileAutoDisable : MonoBehaviour
 {
-    private float lifeTime = 3f;
+    private float lifeTime = 6f;
 
     void OnEnable()
     {

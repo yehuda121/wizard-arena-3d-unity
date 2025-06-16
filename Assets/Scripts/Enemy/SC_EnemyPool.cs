@@ -10,6 +10,7 @@ public class SC_EnemyPool : MonoBehaviour
     public int poolSize = 10;            // Number of enemies to prepare
 
     private List<GameObject> enemies;    // Internal list of pooled enemies
+    public List<GameObject> Enemies => enemies;
 
     void Start()
     {

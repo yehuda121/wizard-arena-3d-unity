@@ -1,48 +1,48 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
 
-// This script controls the health bar that appears above enemy heads.
-// It follows the enemy on screen and hides the bar when not visible to the camera.
 public class SC_EnemyHealthBar : MonoBehaviour
 {
-    public Image fillImage;        // Reference to the fill image inside the health bar
-    public Transform target;       // The world-space anchor the bar should follow (usually above the enemy's head)
+    public Image fillImage;        // The red fill image of the health bar
+    public Transform target;       // The world-space point to follow (usually above the enemy's head)
 
-    private CanvasGroup canvasGroup; // Used to control visibility of the bar via transparency
+    private CanvasGroup canvasGroup;
 
     void Start()
     {
-        // Add CanvasGroup to allow fading in/out
         canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+        Canvas canvas = GetComponent<Canvas>();
+        if (canvas != null && canvas.renderMode == RenderMode.WorldSpace && canvas.worldCamera == null)
+        {
+            canvas.worldCamera = Camera.main;
+        }
     }
 
-    void Update()
+    void LateUpdate()
     {
-        // If target is gone or inactive — hide the bar
         if (target == null || !target.gameObject.activeInHierarchy)
         {
             canvasGroup.alpha = 0f;
             return;
         }
 
-        // Update the screen position of the bar based on world position of the anchor
-        transform.position = Camera.main.WorldToScreenPoint(target.position);
+        // Directly move the health bar to follow the world-space anchor
+        //transform.position = target.position;
+        Debug.Log("Health bar following position: " + target.position);
 
-        // Calculate the direction from camera to the target
+        // Optionally rotate to face the camera
+        transform.forward = Camera.main.transform.forward;
+
+        // Show or hide based on angle from camera
         Vector3 cameraForward = Camera.main.transform.forward;
         Vector3 dirToTarget = (target.position - Camera.main.transform.position).normalized;
-
-        // Get the angle between camera forward and the target direction
         float angle = Vector3.Angle(cameraForward, dirToTarget);
 
-        // If enemy is in front of camera (within field of view) — show the bar
-        bool isVisible = angle < 60f;
-
-        if (canvasGroup != null)
-            canvasGroup.alpha = isVisible ? 1f : 0f;
+        canvasGroup.alpha = angle < 90f ? 1f : 0f;
     }
 
-    // Called when health changes (value between 0–1)
     public void SetHealth(float percent)
     {
         if (fillImage != null)

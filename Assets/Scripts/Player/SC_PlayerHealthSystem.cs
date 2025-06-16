@@ -11,20 +11,21 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
     private SC_PlayerHealthBar healthBar;    // UI health bar
     private SC_WizardAnimator animatorController;
+    public bool isDead = false;
 
     void Start()
     {
         currentHealth = maxHealth;
 
-        // Try to find the health bar if not already assigned
+        // Try to find the health bar object in the scene if not already assigned
         if (healthBar == null)
             healthBar = FindObjectOfType<SC_PlayerHealthBar>();
 
+        // Initialize the health bar to full health if found
         if (healthBar != null)
-            healthBar.SetHealth(1f); // Full health
-        else
-            Debug.LogWarning("PlayerHealthBar not found in scene!");
+            healthBar.SetHealth(1f); // 100% filled
 
+        // Get the reference to the wizard's animation controller
         animatorController = GetComponent<SC_WizardAnimator>();
     }
 
@@ -65,17 +66,25 @@ public class SC_PlayerHealthSystem : MonoBehaviour
     {
         currentHealth = maxHealth;
 
-        if (healthBar != null)
-            healthBar.SetHealth(1f);
+        // Reassign the health bar if it's missing (fallback)
+        if (healthBar == null)
+            healthBar = FindObjectOfType<SC_PlayerHealthBar>();
 
+        // Update the UI health bar
+        if (healthBar != null)
+            healthBar.SetHealth(1f); // full again
+
+        // Update the HUD value (e.g. percent text or visual)
         SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
         if (hud != null)
             hud.UpdateHealth(currentHealth / maxHealth);
     }
 
+
     private void Die()
     {
         // Trigger death animation through animator controller
+        isDead = true;
         animatorController?.PlayDeath();
 
         // Pause the game
