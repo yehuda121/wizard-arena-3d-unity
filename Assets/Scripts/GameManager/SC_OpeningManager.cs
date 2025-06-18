@@ -3,12 +3,15 @@ using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+
 
 public class SC_OpeningManager : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject settingsPanel;     // The settings UI panel to show after the video
     public Button playButton;            // The button that will trigger loading the next scene
+    public GameObject skipButton;        // The button to skip the video
 
     [Header("Video Settings")]
     public VideoPlayer videoPlayer;      // The video player component
@@ -26,13 +29,20 @@ public class SC_OpeningManager : MonoBehaviour
                 difficultyDropdown.value = PlayerPrefs.GetInt("SelectedDifficulty", 0);
             }
 
-            PlayerPrefs.SetInt("SkipOpeningVideo", 0); 
+            PlayerPrefs.SetInt("SkipOpeningVideo", 0);
             ShowSettings();
+            if (skipButton != null)
+                skipButton.SetActive(false);
+
             return;
         }
 
         // Hide the settings panel at start
         settingsPanel.SetActive(false);
+
+        // Hide the skip button at start
+        if (skipButton != null)
+            skipButton.SetActive(false);
 
         // Connect to video end event
         if (videoPlayer != null)
@@ -54,11 +64,16 @@ public class SC_OpeningManager : MonoBehaviour
         {
             Debug.LogWarning("Play button is not assigned!");
         }
+
+        // Show skip button only if video is playing
+        StartCoroutine(ShowSkipIfVideoIsPlaying());
     }
 
     // Called automatically when the video finishes playing
     void OnVideoEnd(VideoPlayer vp)
     {
+        if (skipButton != null)
+            skipButton.SetActive(false); // Hide skip button when video ends
         ShowSettings();
     }
 
@@ -68,10 +83,10 @@ public class SC_OpeningManager : MonoBehaviour
         {
             difficultyDropdown.value = PlayerPrefs.GetInt("SelectedDifficulty", 0);
         }
+        skipButton?.SetActive(false); // Hide skip button after it's used
 
         ShowSettings();
     }
-
 
     // Show the settings panel (only once)
     void ShowSettings()
@@ -88,11 +103,34 @@ public class SC_OpeningManager : MonoBehaviour
     {
         if (difficultyDropdown != null)
         {
-            PlayerPrefs.SetInt("SelectedDifficulty", difficultyDropdown.value);
+            int difficultyIndex = difficultyDropdown.value;
+            PlayerPrefs.SetInt("SelectedDifficulty", difficultyIndex);
+
+            int initialSpawnedEnemies = 0;
+            switch (difficultyIndex)
+            {
+                case 0: initialSpawnedEnemies = 0; break;  // Easy
+                case 1: initialSpawnedEnemies = 10; break; // Medium
+                case 2: initialSpawnedEnemies = 20; break; // Hard
+                case 3: initialSpawnedEnemies = 30; break; // Boss
+            }
+
+            PlayerPrefs.SetInt("InitialSpawnedEnemies", initialSpawnedEnemies);
             PlayerPrefs.Save();
         }
 
         Debug.Log("Play button clicked!");
         SceneManager.LoadScene("MainArena");
+    }
+
+    // Coroutine to check if video is playing and show skip button
+    private IEnumerator ShowSkipIfVideoIsPlaying()
+    {
+        yield return new WaitForSeconds(0.2f); // Wait a short moment for video to start
+
+        if (videoPlayer != null && videoPlayer.isPlaying && skipButton != null)
+        {
+            skipButton.SetActive(true);
+        }
     }
 }

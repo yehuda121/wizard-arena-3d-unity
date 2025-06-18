@@ -11,14 +11,18 @@ public class SC_BossEnemy : MonoBehaviour
 
     private Transform player; // Reference to player
     private SC_GameManager gameManager; // To check pause state
+    private SC_BossAnimator bossAnimator; // Reference to boss animator script
 
     void Start()
     {
         player = GameObject.FindWithTag("Player")?.transform;
         gameManager = FindObjectOfType<SC_GameManager>();
+        bossAnimator = GetComponent<SC_BossAnimator>();
 
         if (player == null)
             Debug.LogWarning("[BossEnemy] Player not found!");
+        if (bossAnimator == null)
+            Debug.LogWarning("[BossEnemy] Boss animator script not found!");
     }
 
     void Update()
@@ -44,30 +48,40 @@ public class SC_BossEnemy : MonoBehaviour
             shootTimer = 0f;
         }
     }
-
     void ShootAtPlayer()
     {
+
+        // Play attack animation immediately
+        if (bossAnimator != null)
+            bossAnimator.PlayAttack();
+
+        // Start coroutine to shoot after delay
+        StartCoroutine(DelayedShoot());
+    }
+
+    private System.Collections.IEnumerator DelayedShoot()
+    {
+        yield return new WaitForSeconds(1f); // Wait before firing
+
         if (bossProjectilePrefab == null || BossShootPoint == null)
         {
-            if (!bossProjectilePrefab)
-            {
-                Debug.Log("bossProjectilePrefab == null");
-            }
-            else
-            {
-                Debug.Log("BossShootPoint == null");
-            }
-            return;
+            Debug.LogWarning("[BossEnemy] Missing projectile prefab or shoot point!");
+            yield break;
         }
-        
-        GameObject proj = Instantiate(bossProjectilePrefab, BossShootPoint.position, Quaternion.identity);
-        Vector3 direction = (player.position - BossShootPoint.position).normalized;
+
+        GameObject proj = Instantiate(bossProjectilePrefab, BossShootPoint.position, BossShootPoint.rotation);
 
         Rigidbody rb = proj.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.velocity = direction * 15f;
+            rb.velocity = BossShootPoint.forward * 15f;
         }
-        Debug.Log("Boss is shooting");
+        else
+        {
+            Debug.LogWarning("[BossEnemy] Projectile prefab is missing Rigidbody!");
+        }
+
+        Debug.Log("[BossEnemy] Boss shot projectile.");
     }
+
 }

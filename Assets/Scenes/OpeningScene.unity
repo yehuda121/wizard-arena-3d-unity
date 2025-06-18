@@ -1688,6 +1688,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settingsPanel: {fileID: 1850233357}
   playButton: {fileID: 2088663777}
+  skipButton: {fileID: 2100920520}
   videoPlayer: {fileID: 1219681188}
   difficultyDropdown: {fileID: 2020096479}
 --- !u!1 &1234251383

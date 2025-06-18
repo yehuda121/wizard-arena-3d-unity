@@ -38,13 +38,6 @@ public class SC_MagicProjectile : MonoBehaviour
                 percentDamage = 0.25f; // 25% damage to regular enemy
             }
 
-            //if (percentDamage > 0f)
-            //{
-            //    // Apply damage and disable projectile
-            //    enemyHealth.TakeDamage(25f);
-            //    gameObject.SetActive(false);
-            //    return;
-            //}
             if (percentDamage > 0f)
             {
                 float damage = enemyHealth.maxHealth * percentDamage;

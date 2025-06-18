@@ -30,7 +30,7 @@ public class SC_EnemyHealthBar : MonoBehaviour
 
         // Directly move the health bar to follow the world-space anchor
         //transform.position = target.position;
-        Debug.Log("Health bar following position: " + target.position);
+        //Debug.Log("Health bar following position: " + target.position);
 
         // Optionally rotate to face the camera
         transform.forward = Camera.main.transform.forward;

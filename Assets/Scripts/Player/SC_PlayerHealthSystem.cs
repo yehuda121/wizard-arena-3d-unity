@@ -31,6 +31,8 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
 
         // If blocking and not in boss stage, ignore damage
@@ -41,7 +43,7 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
             // If in boss stage while blocking, reduce damage
             if (gameManager != null && gameManager.currentDifficulty == DifficultyLevel.Boss)
-                amount = 0.05f;
+                amount = maxHealth * 0.05f;
         }
 
         if (currentHealth > 0)
@@ -83,6 +85,8 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
     private void Die()
     {
+        if(isDead) return;
+
         // Trigger death animation through animator controller
         isDead = true;
         animatorController?.PlayDeath();
@@ -112,5 +116,6 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         PlayerPrefs.SetInt("SkipOpeningVideo", 1);
         Time.timeScale = 1f;
         SceneManager.LoadScene("OpeningScene");
+
     }
 }

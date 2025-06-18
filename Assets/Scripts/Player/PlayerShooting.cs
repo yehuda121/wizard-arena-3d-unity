@@ -15,51 +15,78 @@ public class PlayerShooting : MonoBehaviour
     public float powerUpDuration = 30f;  // Duration of the power-up in seconds
 
     public int score = 0;                // Total number of enemies defeated (for score)
+    public int stageKillCount = 0;       // For tracking kills during each stage
 
     private float lastShotTime = -999f;  // Time of last shot
-    private PlayerProjectilePool projectilePool;      // Object pool for player projectiles
-    private SC_PlayerHealthSystem playerHealth;       // Reference to player health (for shield state)
-    private SC_WizardAnimator animatorController;     // Reference to centralized animation controller
+    private PlayerProjectilePool projectilePool;
+    private SC_PlayerHealthSystem playerHealth;
+    private SC_WizardAnimator animatorController;
 
     void Start()
     {
-        // Find required components in the scene
         projectilePool = FindObjectOfType<PlayerProjectilePool>();
         playerHealth = GetComponent<SC_PlayerHealthSystem>();
         animatorController = GetComponent<SC_WizardAnimator>();
+
+        // Initialize stageKillCount based on selected difficulty
+        if (PlayerPrefs.HasKey("SelectedDifficulty"))
+        {
+            int saved = PlayerPrefs.GetInt("SelectedDifficulty", 0);
+            switch (saved)
+            {
+                case 0: stageKillCount = 0; break;  // Easy
+                case 1: stageKillCount = 10; break; // Medium
+                case 2: stageKillCount = 20; break; // Hard
+                case 3: stageKillCount = 30; break; // Boss
+            }
+        }
+
+        // Reset global flags
+        PlayerState.isShooting = false;
+        PlayerState.isBlocking = false;
     }
 
     void Update()
     {
         if (playerHealth.isDead)
+        {
+            //PlayerState.isDead = true;
             return;
+        }
+
+        PlayerState.isDead = false;
 
         // Toggle blocking mode using 'S' key
         if (Input.GetKeyDown(KeyCode.S))
         {
             playerHealth.isBlocking = true;
+            PlayerState.isBlocking = true;
             animatorController?.SetShielding(true);
         }
         else if (Input.GetKeyUp(KeyCode.S))
         {
             playerHealth.isBlocking = false;
+            PlayerState.isBlocking = false;
             animatorController?.SetShielding(false);
         }
 
         // Shoot if spacebar is held, cooldown passed, and not blocking
         if (!playerHealth.isBlocking && Input.GetKey(KeyCode.Space) && Time.time > lastShotTime + cooldown)
         {
+            PlayerState.isShooting = true;
             Shoot();
             lastShotTime = Time.time;
             animatorController?.PlayAttack();
+        }
+        else
+        {
+            PlayerState.isShooting = false;
         }
 
         // Update power-up timer if active
         if (poweredUp)
         {
             powerUpTimer -= Time.deltaTime;
-
-            // Disable power-up if timer has expired
             if (powerUpTimer <= 0f)
             {
                 poweredUp = false;
@@ -90,17 +117,13 @@ public class PlayerShooting : MonoBehaviour
     // Shoot a projectile using the pool
     void Shoot()
     {
-        // Get a projectile from the pool
         GameObject projectile = projectilePool.GetNextProjectile();
 
-        // Set projectile position and rotation to match shoot point
         projectile.transform.position = shootPoint.position;
         projectile.transform.rotation = shootPoint.rotation;
 
-        // Activate the projectile in the scene
         projectile.SetActive(true);
 
-        // Apply velocity to the projectile
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         rb.velocity = shootPoint.forward * shootForce;
     }

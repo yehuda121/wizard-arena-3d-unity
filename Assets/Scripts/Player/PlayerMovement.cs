@@ -13,34 +13,48 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Cache required components
         playerHealth = GetComponent<SC_PlayerHealthSystem>();
-
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
         animatorController = GetComponent<SC_WizardAnimator>();
+
+        // Reset death state at game start
+        PlayerState.isDead = false;
     }
 
     void Update()
     {
+        if (PlayerState.isDead || PlayerState.isBlocking || PlayerState.isShooting)
+        {
+            return;   
+        }
+        // Stop all movement if player is dead
         if (playerHealth != null && playerHealth.isDead)
+        {
+            PlayerState.isDead = true;
+            PlayerState.isWalking = false;
             return;
+        }
 
         float moveInput = 0f;
         float rotateInput = 0f;
+
+        // Debug trigger: simulate death with key 'K'
         if (Input.GetKey(KeyCode.K))
         {
-            Debug.Log("k press die");
             animatorController.PlayDeath();
-        }
+            //PlayerState.isDead = true;
+        } 
 
-        // Read input for rotation
+        // Read input for rotation (left/right arrows)
         if (Input.GetKey(KeyCode.LeftArrow))
             rotateInput = -1f;
         else if (Input.GetKey(KeyCode.RightArrow))
             rotateInput = 1f;
 
-        // Read input for forward movement
+        // Read input for forward movement (up arrow)
         if (Input.GetKey(KeyCode.UpArrow))
             moveInput = 1f;
 
@@ -52,11 +66,12 @@ public class PlayerMovement : MonoBehaviour
             rb.MoveRotation(rb.rotation * turn);
         }
 
-        // Handle movement and wall check
+        // Handle movement and wall collision check
         bool isMoving = false;
 
         if (moveInput > 0f)
         {
+            // Check for wall ahead before moving
             if (!Physics.Raycast(transform.position, transform.forward, wallDetectionDistance))
             {
                 Vector3 moveDirection = transform.forward * moveSpeed * Time.deltaTime;
@@ -65,8 +80,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Update walking animation based on actual movement
+        // Update walking state globally and in animator
+        PlayerState.isWalking = isMoving;
         animatorController?.SetWalking(isMoving);
     }
 }
-
