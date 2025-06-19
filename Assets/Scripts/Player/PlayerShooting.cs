@@ -94,11 +94,11 @@ public class PlayerShooting : MonoBehaviour
         }
 
         // Update HUD boost timer
-        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        if (hud != null)
-        {
-            hud.UpdateBoostTime(poweredUp ? powerUpTimer : 0f);
-        }
+        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        //if (hud != null)
+        //{
+        //    hud.UpdateBoostTime(poweredUp ? powerUpTimer : 0f);
+        //}
     }
 
     // Called when the player reaches the kill threshold for power-up
@@ -107,12 +107,18 @@ public class PlayerShooting : MonoBehaviour
         poweredUp = true;
         powerUpTimer = powerUpDuration;
 
-        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        if (hud != null)
-        {
-            hud.UpdateBoostTime(powerUpTimer);
-        }
+        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        //if (hud != null)
+        //{
+        //    hud.UpdateBoostTime(powerUpTimer);
+        //}
     }
+
+    public float GetRemainingBoostTime()
+    {
+        return powerUpTimer;
+    }
+
 
     // Shoot a projectile using the pool
     void Shoot()

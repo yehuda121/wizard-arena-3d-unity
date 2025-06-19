@@ -8,7 +8,7 @@ public class SC_GameManager : MonoBehaviour
     public SC_EnemySpawner enemySpawner;
     public GameObject bossEnemyPrefab;
     public Transform bossSpawnPoint;
-    public SC_GameHUD gameHUD;
+    public SC_ButtonHUD gameHUD;
 
     public GameObject pauseButton;
     public GameObject startOverButton;
@@ -69,7 +69,7 @@ public class SC_GameManager : MonoBehaviour
         currentDifficulty = level;
 
         if (gameHUD != null)
-            gameHUD.UpdateStage(level.ToString());
+            gameHUD.UpdateLevel(level.ToString());
 
         if (enemySpawner != null)
             enemySpawner.SetDifficulty(level);

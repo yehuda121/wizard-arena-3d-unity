@@ -56,13 +56,19 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         if (healthBar != null)
             healthBar.SetHealth(percent);
 
-        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        if (hud != null)
-            hud.UpdateHealth(currentHealth / maxHealth);
+        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        //if (hud != null)
+        //    hud.UpdateHealth(currentHealth / maxHealth);
 
         if (currentHealth <= 0f)
             Die();
     }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
 
     public void ResetToFull()
     {
@@ -77,9 +83,9 @@ public class SC_PlayerHealthSystem : MonoBehaviour
             healthBar.SetHealth(1f); // full again
 
         // Update the HUD value (e.g. percent text or visual)
-        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        if (hud != null)
-            hud.UpdateHealth(currentHealth / maxHealth);
+        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+        //if (hud != null)
+        //    hud.UpdateHealth(currentHealth / maxHealth);
     }
 
 
@@ -116,6 +122,5 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         PlayerPrefs.SetInt("SkipOpeningVideo", 1);
         Time.timeScale = 1f;
         SceneManager.LoadScene("OpeningScene");
-
     }
 }

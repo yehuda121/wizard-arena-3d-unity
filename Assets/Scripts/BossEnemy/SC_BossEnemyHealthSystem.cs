@@ -100,9 +100,9 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
             playerShooting.score++;
             playerShooting.stageKillCount++;
 
-            SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-            if (hud != null)
-                hud.UpdateScore(playerShooting.score);
+            //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+            //if (hud != null)
+            //    hud.UpdateScore(playerShooting.score);
 
             if (!playerShooting.poweredUp)
             {

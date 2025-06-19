@@ -78,60 +78,6 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         }
     }
 
-    //void Die()
-    //{
-    //    // Stop rigidbody movement
-    //    Rigidbody rb = GetComponent<Rigidbody>();
-    //    if (rb != null)
-    //    {
-    //        rb.velocity = Vector3.zero;
-    //        rb.angularVelocity = Vector3.zero;
-    //    }
-
-    //    // Play death animation
-    //    SC_EnemyAnimator animator = GetComponent<SC_EnemyAnimator>();
-    //    if (animator != null)
-    //    {
-    //        animator.PlayDeath();
-    //    }
-
-    //    // Inform controller to stop movement and shooting after death
-    //    SC_EnemyController controller = GetComponent<SC_EnemyController>();
-    //    if (controller != null)
-    //    {
-    //        controller.Die();
-    //    }
-
-    //    // Destroy health bar object
-    //    if (healthBar != null)
-    //        Destroy(healthBar.gameObject);
-
-    //    // Update player score and power-up system
-    //    PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
-    //    if (playerShooting != null)
-    //    {
-    //        playerShooting.score++;
-    //        playerShooting.stageKillCount++;
-
-    //        SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-    //        if (hud != null)
-    //            hud.UpdateScore(playerShooting.score);
-
-    //        if (!playerShooting.poweredUp)
-    //        {
-    //            playerShooting.killCount++;
-    //            if (playerShooting.killCount >= 4)
-    //            {
-    //                playerShooting.killCount = 0;
-    //                playerShooting.ActivatePowerUp();
-    //            }
-    //        }
-    //    }
-
-    //    StartCoroutine(DisableAfterDelay(3f));
-    //    //Debug.Log("[Enemy] Died: " + gameObject.name);
-    //}
-
     void Die()
     {
         // Stop rigidbody movement
@@ -177,9 +123,9 @@ public class SC_EnemyHealthSystem : MonoBehaviour
             playerShooting.score++;
             playerShooting.stageKillCount++;
 
-            SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-            if (hud != null)
-                hud.UpdateScore(playerShooting.score);
+            //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
+            //if (hud != null)
+            //    hud.UpdateScore(playerShooting.score);
 
             if (!playerShooting.poweredUp)
             {
