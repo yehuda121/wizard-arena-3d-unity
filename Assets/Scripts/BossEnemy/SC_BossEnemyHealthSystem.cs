@@ -115,13 +115,29 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
             }
         }
 
-        StartCoroutine(DisableAfterDelay(4f));
+        // Show Victory Text when boss is defeated
+        GameObject victoryText = GameObject.Find("VictoryText");
+        if (victoryText != null)
+        {
+            victoryText.SetActive(true);
+        }
+
+        StartCoroutine(DisableAfterDelay(7f));
     }
 
     private IEnumerator DisableAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);
-        gameObject.SetActive(false);
-        // כאן תוכל להפעיל הודעת ניצחון בעתיד
+
+        // Hide the boss 
+        //gameObject.SetActive(false);
+
+        // Set flag to skip the opening video
+        PlayerPrefs.SetInt("SkipOpeningVideo", 1);
+        PlayerPrefs.Save();
+
+        // Load the Opening Scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("OpeningScene");
     }
+
 }

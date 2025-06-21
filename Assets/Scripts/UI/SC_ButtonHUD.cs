@@ -35,7 +35,7 @@ public class SC_ButtonHUD : MonoBehaviour
         if (TimerText != null)
             TimerText.text = $"Timer: {minutes}:{seconds:00}";
 
-        // ✅ Update health from SC_PlayerHealthSystem
+        // Update health from SC_PlayerHealthSystem
         if (playerHealth != null && HealthText != null)
         {
             float percent = Mathf.Clamp01(playerHealth.GetCurrentHealth() / playerHealth.maxHealth);
@@ -43,7 +43,7 @@ public class SC_ButtonHUD : MonoBehaviour
             HealthText.text = "Health: " + displayPercent + "%";
         }
 
-        // ✅ Update boost time and score from PlayerShooting
+        // Update boost time and score from PlayerShooting
         if (playerShooting != null)
         {
             if (BoostText != null)
@@ -58,6 +58,36 @@ public class SC_ButtonHUD : MonoBehaviour
             {
                 ScoreText.text = "Score: " + playerShooting.score;
             }
+        }
+    }
+
+    public void OnDropdownLevelChanged(int index)
+    {
+        DifficultyLevel selected = DifficultyLevel.Easy;
+
+        switch (index)
+        {
+            case 0:
+                selected = DifficultyLevel.Easy;
+                break;
+            case 1:
+                selected = DifficultyLevel.Medium;
+                break;
+            case 2:
+                selected = DifficultyLevel.Hard;
+                break;
+            case 3:
+                selected = DifficultyLevel.Boss;
+                break;
+            default:
+                Debug.LogWarning("Invalid difficulty index from dropdown.");
+                break;
+        }
+
+        SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.SetDifficulty(selected);
         }
     }
 

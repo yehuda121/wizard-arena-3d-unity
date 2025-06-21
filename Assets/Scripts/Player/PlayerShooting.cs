@@ -22,8 +22,17 @@ public class PlayerShooting : MonoBehaviour
     private SC_PlayerHealthSystem playerHealth;
     private SC_WizardAnimator animatorController;
 
+    public AudioClip spellShootClip;
+    private AudioSource audioSource;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.Log("audioSource = null");
+        }
+
         projectilePool = FindObjectOfType<PlayerProjectilePool>();
         playerHealth = GetComponent<SC_PlayerHealthSystem>();
         animatorController = GetComponent<SC_WizardAnimator>();
@@ -132,5 +141,7 @@ public class PlayerShooting : MonoBehaviour
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         rb.velocity = shootPoint.forward * shootForce;
+
+        audioSource.PlayOneShot(spellShootClip); //play the sound
     }
 }

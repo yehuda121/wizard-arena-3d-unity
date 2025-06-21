@@ -13,6 +13,9 @@ public class SC_EnemyController : MonoBehaviour
 
     [Header("Shooting Settings")]
     public Transform enemyShootPoint;
+    public AudioClip enemyShootSound;
+    private AudioSource audioSource;
+
     private float fireTimer = 0f;
     private float nextFireTime = 0f;
 
@@ -28,6 +31,8 @@ public class SC_EnemyController : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+
         player = GameObject.FindWithTag("Player")?.transform;
         if (player == null)
         {
@@ -158,6 +163,15 @@ public class SC_EnemyController : MonoBehaviour
         }
 
         proj.SetActive(true);
+
+        if (audioSource != null && enemyShootSound != null)
+        {
+            audioSource.PlayOneShot(enemyShootSound, 0.5f);//shoot sound
+        } else
+        {
+            Debug.Log("audioSource = null || enemyShootSound != null");
+        }
+
     }
 
     Vector3 CalculateAvoidance()

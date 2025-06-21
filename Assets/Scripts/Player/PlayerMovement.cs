@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (PlayerState.isDead || PlayerState.isBlocking || PlayerState.isShooting)
+        if (PlayerState.isDead || PlayerState.isShooting)
         {
             return;   
         }
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
             rotateInput = 1f;
 
         // Read input for forward movement (up arrow)
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) && !PlayerState.isBlocking)
             moveInput = 1f;
 
         // Apply rotation
