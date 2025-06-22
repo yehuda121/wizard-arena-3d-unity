@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class SC_EnemyHealthBar : MonoBehaviour
 {
-    public Image fillImage;        // The red fill image of the health bar
-    public Transform target;       // The world-space point to follow (usually above the enemy's head)
+    public Image fillImage;       
+    public Transform target;      
 
     private CanvasGroup canvasGroup;
 
@@ -28,11 +28,7 @@ public class SC_EnemyHealthBar : MonoBehaviour
             return;
         }
 
-        // Directly move the health bar to follow the world-space anchor
-        //transform.position = target.position;
-        //Debug.Log("Health bar following position: " + target.position);
-
-        // Optionally rotate to face the camera
+        // rotate to face the camera
         transform.forward = Camera.main.transform.forward;
 
         // Show or hide based on angle from camera

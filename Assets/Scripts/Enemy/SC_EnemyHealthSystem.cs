@@ -89,20 +89,11 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         }
 
         // Play death animation
-        // Try BossAnimator first
-        SC_BossAnimator bossAnimator = GetComponent<SC_BossAnimator>();
-        if (bossAnimator != null)
+        SC_EnemyAnimator enemyAnimator = GetComponent<SC_EnemyAnimator>();
+        if (enemyAnimator != null)
         {
-            bossAnimator.PlayDeath();
-        }
-        else
-        {
-            // If not boss, use regular enemy animator
-            SC_EnemyAnimator enemyAnimator = GetComponent<SC_EnemyAnimator>();
-            if (enemyAnimator != null)
-            {
-                enemyAnimator.PlayDeath();
-            }
+            //Debug.Log("anim death trigered");
+            enemyAnimator.PlayDeath();
         }
 
         // Inform controller to stop movement and shooting after death
@@ -121,11 +112,7 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         if (playerShooting != null)
         {
             playerShooting.score++;
-            playerShooting.stageKillCount++;
-
-            //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-            //if (hud != null)
-            //    hud.UpdateScore(playerShooting.score);
+            playerShooting.stageKillCount++;;
 
             if (!playerShooting.poweredUp)
             {
@@ -140,7 +127,6 @@ public class SC_EnemyHealthSystem : MonoBehaviour
 
         StartCoroutine(DisableAfterDelay(3f));
     }
-
 
     private IEnumerator DisableAfterDelay(float delaySeconds)
     {

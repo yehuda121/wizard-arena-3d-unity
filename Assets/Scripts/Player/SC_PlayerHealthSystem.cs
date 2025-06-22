@@ -82,10 +82,6 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         if (healthBar != null)
             healthBar.SetHealth(1f); // full again
 
-        // Update the HUD value (e.g. percent text or visual)
-        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        //if (hud != null)
-        //    hud.UpdateHealth(currentHealth / maxHealth);
     }
 
 

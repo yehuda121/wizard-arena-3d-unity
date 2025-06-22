@@ -6,15 +6,17 @@ TagManager:
   tags:
   - Enemy
   - BossEnemy
+  - EnemyProjectile
+  - BossProjectile
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - EnemyProjectile
   - Water
   - UI
-  - 
-  - 
+  - PlayerProjectile
+  - BossProjectile
   - Enemy
   - 
   - 

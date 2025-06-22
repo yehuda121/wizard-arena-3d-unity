@@ -11,18 +11,28 @@ public class SC_ButtonHUD : MonoBehaviour
     public TextMeshProUGUI ScoreText;
 
     [Header("Stats Panel")]
-    public GameObject StatsContainer; // contain - Boost, Score ...'
+    public GameObject StatsContainer;
 
     private float elapsedTime = 0f;
     private bool isVisible = true;
 
     private PlayerShooting playerShooting;
     private SC_PlayerHealthSystem playerHealth;
+    private SC_GameManager gameManager;
+
+    private DifficultyLevel lastDifficulty;
 
     void Start()
     {
         playerShooting = FindObjectOfType<PlayerShooting>();
         playerHealth = FindObjectOfType<SC_PlayerHealthSystem>();
+        gameManager = FindObjectOfType<SC_GameManager>();
+
+        if (gameManager != null)
+        {
+            lastDifficulty = gameManager.currentDifficulty;
+            UpdateLevelText(lastDifficulty.ToString());
+        }
     }
 
     void Update()
@@ -35,7 +45,7 @@ public class SC_ButtonHUD : MonoBehaviour
         if (TimerText != null)
             TimerText.text = $"Timer: {minutes}:{seconds:00}";
 
-        // Update health from SC_PlayerHealthSystem
+        // Update health
         if (playerHealth != null && HealthText != null)
         {
             float percent = Mathf.Clamp01(playerHealth.GetCurrentHealth() / playerHealth.maxHealth);
@@ -43,7 +53,7 @@ public class SC_ButtonHUD : MonoBehaviour
             HealthText.text = "Health: " + displayPercent + "%";
         }
 
-        // Update boost time and score from PlayerShooting
+        // Update boost and score
         if (playerShooting != null)
         {
             if (BoostText != null)
@@ -59,44 +69,23 @@ public class SC_ButtonHUD : MonoBehaviour
                 ScoreText.text = "Score: " + playerShooting.score;
             }
         }
-    }
 
-    public void OnDropdownLevelChanged(int index)
-    {
-        DifficultyLevel selected = DifficultyLevel.Easy;
-
-        switch (index)
+        // Update level if changed
+        if (gameManager != null && gameManager.currentDifficulty != lastDifficulty)
         {
-            case 0:
-                selected = DifficultyLevel.Easy;
-                break;
-            case 1:
-                selected = DifficultyLevel.Medium;
-                break;
-            case 2:
-                selected = DifficultyLevel.Hard;
-                break;
-            case 3:
-                selected = DifficultyLevel.Boss;
-                break;
-            default:
-                Debug.LogWarning("Invalid difficulty index from dropdown.");
-                break;
-        }
-
-        SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
-        if (gameManager != null)
-        {
-            gameManager.SetDifficulty(selected);
+            lastDifficulty = gameManager.currentDifficulty;
+            UpdateLevelText(lastDifficulty.ToString());
         }
     }
 
-    public void UpdateLevel(string levelName)
+    // Updates the level text in the HUD
+    private void UpdateLevelText(string levelName)
     {
         if (LevelText != null)
             LevelText.text = "Level: " + levelName;
     }
 
+    // Toggle visibility of stats panel
     public void ToggleStatsPanel()
     {
         if (StatsContainer != null)

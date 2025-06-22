@@ -4,7 +4,7 @@ using System.Collections;
 public class SC_BossEnemyHealthSystem : MonoBehaviour
 {
     public float maxHealth = 100f;
-    private float currentHealth;
+    public float currentHealth;
     private SC_EnemyHealthBar healthBar;
 
     [Header("References")]
@@ -12,14 +12,24 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
     public Transform healthBarAnchor;
     public Transform healthCanvas;
 
-    private Animator animator;
+    private GameObject victoryCanvas;
+    private GameObject victoryTextObject;
+
+
+    [HideInInspector]
+    public bool isDead = false;
 
     void Start()
     {
+        victoryCanvas = GameObject.Find("VictoryCanvas");
+        if (victoryCanvas != null)
+        {
+            victoryTextObject = victoryCanvas.transform.Find("VictoryText")?.gameObject;
+            if (victoryTextObject != null)
+                victoryTextObject.SetActive(false);
+        }
+
         currentHealth = maxHealth;
-
-        animator = GetComponent<Animator>();
-
         healthBar = GetComponentInChildren<SC_EnemyHealthBar>();
         if (healthBar != null)
         {
@@ -30,28 +40,31 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        if (currentHealth <= 0)
+        if (isDead || currentHealth <= 0)
             return;
 
         currentHealth -= amount;
-        float percent = Mathf.Clamp01(currentHealth / maxHealth);
 
+        float percent = Mathf.Clamp01(currentHealth / maxHealth);
         if (healthBar != null)
             healthBar.SetHealth(percent);
 
         if (currentHealth <= 0f)
+        {
             Die();
+        }
     }
 
     public void ResetEnemy()
     {
+        isDead = false;
         currentHealth = maxHealth;
 
         if (healthBar == null)
         {
             if (enemyHealthBarPrefab == null || healthCanvas == null || healthBarAnchor == null)
             {
-                Debug.LogWarning("[Boss ResetEnemy] Missing references!");
+                Debug.LogWarning("[ResetEnemy] Missing references!");
                 return;
             }
 
@@ -68,41 +81,26 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
         {
             healthBar.SetHealth(1f);
         }
-
-        if (animator != null)
-        {
-            animator.ResetTrigger("Die"); // optional
-        }
     }
 
     void Die()
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+        isDead = true;
 
-        if (animator != null)
+        SC_BossAnimator bossAnimator = GetComponent<SC_BossAnimator>();
+        if (bossAnimator != null)
         {
-            animator.SetTrigger("Die");
+            bossAnimator.PlayDeath();
         }
 
         if (healthBar != null)
-        {
             Destroy(healthBar.gameObject);
-        }
 
         PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
         if (playerShooting != null)
         {
             playerShooting.score++;
             playerShooting.stageKillCount++;
-
-            //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-            //if (hud != null)
-            //    hud.UpdateScore(playerShooting.score);
 
             if (!playerShooting.poweredUp)
             {
@@ -115,29 +113,28 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
             }
         }
 
-        // Show Victory Text when boss is defeated
-        GameObject victoryText = GameObject.Find("VictoryText");
-        if (victoryText != null)
+        if (victoryTextObject != null)
+            victoryTextObject.SetActive(true);
+        else
         {
-            victoryText.SetActive(true);
+            Debug.Log("victoryTextObject = null");
         }
 
-        StartCoroutine(DisableAfterDelay(7f));
+            StartCoroutine(DisableAfterDelay(5f));
     }
 
     private IEnumerator DisableAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);
 
-        // Hide the boss 
-        //gameObject.SetActive(false);
-
-        // Set flag to skip the opening video
-        PlayerPrefs.SetInt("SkipOpeningVideo", 1);
-        PlayerPrefs.Save();
-
-        // Load the Opening Scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("OpeningScene");
+        SC_GameManager gm = FindObjectOfType<SC_GameManager>();
+        if (gm != null)
+        {
+            gm.ReturnToMainMenu();
+        }
+        else
+        {
+            Debug.LogWarning("[Boss] GameManager not found.");
+        }
     }
-
 }

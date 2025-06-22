@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4923878193819028868}
   - component: {fileID: 3696010997979986670}
   - component: {fileID: 8194823404161229801}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Magic fire 3
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -4919,7 +4919,7 @@ GameObject:
   - component: {fileID: 5848476350960230054}
   - component: {fileID: 6150886431397261747}
   - component: {fileID: 4877767467230498196}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9761,7 +9761,7 @@ GameObject:
   - component: {fileID: 9197634930041320945}
   - component: {fileID: 3619326903582580371}
   - component: {fileID: 6193463367225775276}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14603,7 +14603,7 @@ GameObject:
   - component: {fileID: 8412434351758562359}
   - component: {fileID: 7328156166281477282}
   - component: {fileID: 9130457101452110038}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}

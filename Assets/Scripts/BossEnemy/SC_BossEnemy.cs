@@ -13,11 +13,18 @@ public class SC_BossEnemy : MonoBehaviour
     private SC_GameManager gameManager; // To check pause state
     private SC_BossAnimator bossAnimator; // Reference to boss animator script
 
+    private SC_BossEnemyHealthSystem bossHealthSystem;
+
     void Start()
     {
         player = GameObject.FindWithTag("Player")?.transform;
         gameManager = FindObjectOfType<SC_GameManager>();
         bossAnimator = GetComponent<SC_BossAnimator>();
+        bossHealthSystem = GetComponent<SC_BossEnemyHealthSystem>();
+        if (bossHealthSystem == null)
+        {
+            Debug.Log("bossHealthSystem = null");
+        }
 
         if (player == null)
             Debug.LogWarning("[BossEnemy] Player not found!");
@@ -30,6 +37,14 @@ public class SC_BossEnemy : MonoBehaviour
         // Do nothing if game is paused or player not found
         if (gameManager != null && gameManager.IsGamePaused()) return;
         if (player == null) return;
+
+        //if (bossHealthSystem.currentHealth <= 0) return;
+        if (bossHealthSystem != null && bossHealthSystem.isDead)
+        {
+            //Debug.Log("Boss is dead (health = " + bossHealthSystem.currentHealth + "), skipping Update");
+            return;
+        }
+
 
         // Rotate to face the player horizontally
         Vector3 lookDir = player.position - transform.position;
@@ -61,7 +76,7 @@ public class SC_BossEnemy : MonoBehaviour
 
     private System.Collections.IEnumerator DelayedShoot()
     {
-        yield return new WaitForSeconds(1f); // Wait before firing
+        yield return new WaitForSeconds(0.5f); // Wait before firing
 
         if (bossProjectilePrefab == null || BossShootPoint == null)
         {
@@ -81,7 +96,7 @@ public class SC_BossEnemy : MonoBehaviour
             Debug.LogWarning("[BossEnemy] Projectile prefab is missing Rigidbody!");
         }
 
-        Debug.Log("[BossEnemy] Boss shot projectile.");
+        //Debug.Log("[BossEnemy] Boss shot projectile.");
     }
 
 }

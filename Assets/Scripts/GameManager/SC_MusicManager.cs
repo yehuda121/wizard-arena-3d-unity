@@ -10,22 +10,27 @@ public class SC_MusicManager : MonoBehaviour
     public AudioClip musicBoss;
 
     private DifficultyLevel lastDifficulty;
+    private SC_GameManager gameManager;
 
     // Called at game start
     void Start()
     {
-        lastDifficulty = DifficultyLevel.Easy;
-        PlayMusicForDifficulty(lastDifficulty);
+        gameManager = FindObjectOfType<SC_GameManager>();
+        if (gameManager != null)
+        {
+            lastDifficulty = gameManager.currentDifficulty;
+            PlayMusicForDifficulty(lastDifficulty);
+        }
     }
 
-    // Called externally when difficulty changes
-    public void UpdateMusic(DifficultyLevel currentDifficulty)
+    void Update()
     {
-        if (currentDifficulty == lastDifficulty)
-            return;
-
-        lastDifficulty = currentDifficulty;
-        PlayMusicForDifficulty(currentDifficulty);
+        // Check if the difficulty level has changed
+        if (gameManager != null && gameManager.currentDifficulty != lastDifficulty)
+        {
+            lastDifficulty = gameManager.currentDifficulty;
+            PlayMusicForDifficulty(lastDifficulty);
+        }
     }
 
     // Chooses music clip based on difficulty

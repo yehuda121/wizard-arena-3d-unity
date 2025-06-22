@@ -12,9 +12,9 @@ public class VolumeManager : MonoBehaviour
     void Start()
     {
         // Reset saved volume values only once for testing
-        PlayerPrefs.DeleteKey("MusicVolume");
-        PlayerPrefs.DeleteKey("SFXVolume");
-        PlayerPrefs.Save();
+        //PlayerPrefs.DeleteKey("MusicVolume");
+        //PlayerPrefs.DeleteKey("SFXVolume");
+        //PlayerPrefs.Save();
 
         // Load saved values (or use default)
         float musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);

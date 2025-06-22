@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-// Handles projectiles shot by the player
+
 public class SC_MagicProjectile : MonoBehaviour
 {
     private void OnEnable()
@@ -15,41 +15,48 @@ public class SC_MagicProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Collision with anything else (not valid targets)
+        // Ignore collisions with unrelated objects
         if (!other.CompareTag("Enemy") && !other.CompareTag("BossEnemy"))
         {
             gameObject.SetActive(false);
             return;
         }
 
-        // Player shot and hit an enemy
-        SC_EnemyHealthSystem enemyHealth = other.GetComponent<SC_EnemyHealthSystem>();
-        if (enemyHealth != null)
+        float percentDamage = 0f;
+        float maxHealth = 0f;
+
+        if (other.CompareTag("BossEnemy"))
         {
-            float percentDamage = 0f;
-
-            if (other.CompareTag("BossEnemy"))
+            SC_BossEnemyHealthSystem bossHealth = other.GetComponent<SC_BossEnemyHealthSystem>();
+            if (bossHealth != null)
             {
-                percentDamage = 0.10f; // 10% damage to boss
-                //Debug.Log("i hit the boss");
+                percentDamage = 0.10f;
+                maxHealth = bossHealth.maxHealth;
+                bossHealth.TakeDamage(maxHealth * percentDamage);
+                //Debug.Log("Hit Boss");
             }
-            else if (other.CompareTag("Enemy"))
+            else
             {
-                percentDamage = 0.25f; // 25% damage to regular enemy
+                Debug.LogWarning("BossEnemyHealthSystem not found on Boss");
             }
-
-            if (percentDamage > 0f)
-            {
-                float damage = enemyHealth.maxHealth * percentDamage;
-                enemyHealth.TakeDamage(damage);
-                gameObject.SetActive(false);
-                return;
-            }
-
-
-            // Just in case damage percent is 0 but still hit something
-            gameObject.SetActive(false);
         }
-    }
-}
+        else if (other.CompareTag("Enemy"))
+        {
+            SC_EnemyHealthSystem enemyHealth = other.GetComponent<SC_EnemyHealthSystem>();
+            if (enemyHealth != null)
+            {
+                percentDamage = 0.25f;
+                maxHealth = enemyHealth.maxHealth;
+                enemyHealth.TakeDamage(maxHealth * percentDamage);
+                //Debug.Log("Hit Enemy");
+            }
+            else
+            {
+                Debug.LogWarning("EnemyHealthSystem not found on Enemy");
+            }
+        }
 
+        gameObject.SetActive(false);
+    }
+
+}

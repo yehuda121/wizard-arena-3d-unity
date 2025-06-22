@@ -188,7 +188,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -587,10 +587,10 @@ PrefabInstance:
       addedObject: {fileID: 8471675793734086105}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2485662036535962796}
+      addedObject: {fileID: 5517723280685225688}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4097679215577198977}
+      addedObject: {fileID: 2485662036535962796}
   m_SourcePrefab: {fileID: 100100000, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
 --- !u!1 &7016125298494406907 stripped
 GameObject:
@@ -662,6 +662,22 @@ MonoBehaviour:
   shootInterval: 4
   bossProjectilePrefab: {fileID: 1975959190090480, guid: afb0b4cf160ed3247acc0c28bfa94448, type: 3}
   BossShootPoint: {fileID: 403617618485685485}
+--- !u!114 &5517723280685225688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7016125298494406907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 906aedd38fb5fc6428bb3d26dbe1c756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  enemyHealthBarPrefab: {fileID: 3329934319989260669, guid: c797a31fddf7e4f46b7c04e33a0cbcd6, type: 3}
+  healthBarAnchor: {fileID: 4290467257714971749}
+  healthCanvas: {fileID: 0}
 --- !u!114 &2485662036535962796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -674,25 +690,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de303a3cf49439347902fd47b46e1df6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4097679215577198977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7016125298494406907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fd262971db2e2f4bb6c6eb5c6e18721, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  enemyHealthBarPrefab: {fileID: 3329934319989260669, guid: c797a31fddf7e4f46b7c04e33a0cbcd6, type: 3}
-  healthBarAnchor: {fileID: 4290467257714971749}
-  healthCanvas: {fileID: 0}
-  victoryCanvas: {fileID: 0}
-  isDead: 0
 --- !u!4 &7644183505023556161 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b7ec33b18414620489a1ceca5893316d, type: 3}

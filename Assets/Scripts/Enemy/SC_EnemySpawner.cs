@@ -2,18 +2,23 @@
 
 public class SC_EnemySpawner : MonoBehaviour
 {
-    public DifficultyLevel currentDifficulty = DifficultyLevel.Easy;
-
     public SC_EnemyPool enemyPool;
     public Transform[] spawnPoints;
 
     private float timer;
     private int spawnedEnemiesCount = 0;
-    private float spawnInterval = 5f;
+    private float spawnInterval = 7f;
+    private SC_GameManager gameManager;
 
     void Start()
     {
-        ApplyDifficultySettings();
+        gameManager = FindObjectOfType<SC_GameManager>();
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager not found!");
+            return;
+        }
+        ApplyDifficultySettings(gameManager.currentDifficulty);
 
         if (PlayerPrefs.HasKey("InitialSpawnedEnemies"))
         {
@@ -26,6 +31,9 @@ public class SC_EnemySpawner : MonoBehaviour
     {
         //Debug.Log(currentDifficulty.ToString());
         //Debug.Log(currentDifficulty == DifficultyLevel.Medium && spawnedEnemiesCount >= 10 && spawnedEnemiesCount < 20);
+
+        DifficultyLevel currentDifficulty = gameManager.currentDifficulty;
+
         if (currentDifficulty == DifficultyLevel.Boss)
         {
             return;
@@ -44,9 +52,6 @@ public class SC_EnemySpawner : MonoBehaviour
     private void spownHelper()
     {
         timer += Time.deltaTime;
-        //Debug.Log(timer);
-        //Debug.Log(spawnInterval);
-        //Debug.Log("timer >= spawnInterval: " + (timer >= spawnInterval));
 
         if (timer >= spawnInterval)
         {
@@ -106,33 +111,26 @@ public class SC_EnemySpawner : MonoBehaviour
         }
     }
 
-    public void SetDifficulty(DifficultyLevel level)
-    {
-        currentDifficulty = level;
-        timer = 0f;
-        ApplyDifficultySettings();
-    }
-
-    private void ApplyDifficultySettings()
+    private void ApplyDifficultySettings(DifficultyLevel level)
     {
         timer = 0f;
 
-        switch (currentDifficulty)
+        switch (level)
         {
             case DifficultyLevel.Easy:
-                spawnInterval = 5f;
+                spawnInterval = 7f;
                 break;
             case DifficultyLevel.Medium:
-                spawnInterval = 4f;
+                spawnInterval = 6f;
                 break;
             case DifficultyLevel.Hard:
-                spawnInterval = 3f;
+                spawnInterval = 5f;
                 break;
             case DifficultyLevel.Boss:
                 spawnInterval = 99f;
                 break;
             default:
-                spawnInterval = 5f;
+                spawnInterval = 7f;
                 break;
         }
     }
