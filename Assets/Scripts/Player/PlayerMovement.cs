@@ -26,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        bool alreadyMooving = PlayerState.isWalking;
+
         if (PlayerState.isDead || PlayerState.isShooting)
         {
             return;   
@@ -82,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Update walking state globally and in animator
         PlayerState.isWalking = isMoving;
-        animatorController?.SetWalking(isMoving);
+        if (!alreadyMooving)
+            animatorController?.SetWalking(isMoving);
     }
 }

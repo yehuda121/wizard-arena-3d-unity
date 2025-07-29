@@ -172,11 +172,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 7
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b7ec33b18414620489a1ceca5893316d, type: 3}
       propertyPath: m_LocalScale.z
@@ -691,7 +691,6 @@ MonoBehaviour:
   enemyHealthBarPrefab: {fileID: 3329934319989260669, guid: c797a31fddf7e4f46b7c04e33a0cbcd6, type: 3}
   healthBarAnchor: {fileID: 4290467257714971749}
   healthCanvas: {fileID: 0}
-  victoryCanvas: {fileID: 0}
   isDead: 0
 --- !u!4 &7644183505023556161 stripped
 Transform:

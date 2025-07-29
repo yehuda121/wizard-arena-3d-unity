@@ -10,7 +10,6 @@ public class SC_CheatMenuManager : MonoBehaviour
 
     private bool isMenuOpen = false;
     private int originalSelection; // Store the original selected difficulty
-
     private void Start()
     {
         if (CheatMenuPanel != null)

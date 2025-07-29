@@ -7,7 +7,7 @@ public class SC_EnemySpawner : MonoBehaviour
 
     private float timer;
     private int spawnedEnemiesCount = 0;
-    private float spawnInterval = 7f;
+    private float spawnInterval = 10f;
     private SC_GameManager gameManager;
 
     void Start()
@@ -59,6 +59,13 @@ public class SC_EnemySpawner : MonoBehaviour
             timer = 0f;
         }
     }
+
+    public void SetSpawnedEnemies(int value)
+    {
+        spawnedEnemiesCount = value;
+        //Debug.Log("SpawnedEnemiesCount initialized to: " + spawnedEnemiesCount);
+    }
+
 
     private void TrySpawn()
     {

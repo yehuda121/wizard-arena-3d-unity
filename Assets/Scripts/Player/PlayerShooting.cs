@@ -25,6 +25,8 @@ public class PlayerShooting : MonoBehaviour
     public AudioClip spellShootClip;
     private AudioSource audioSource;
 
+    private SC_GameManager gameManager;
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();

@@ -24,6 +24,7 @@ public class SC_GameManager : MonoBehaviour
         // Find and assign music manager reference
         musicManager = FindObjectOfType<SC_MusicManager>();
         player = FindObjectOfType<PlayerShooting>();
+        enemySpawner = FindObjectOfType<SC_EnemySpawner>();
 
         if (PlayerPrefs.HasKey("SelectedDifficulty"))
         {
@@ -35,6 +36,8 @@ public class SC_GameManager : MonoBehaviour
         {
             SetDifficulty(DifficultyLevel.Easy);
         }
+
+        InitializeStageState(player, enemySpawner);
 
         ResumeGame();
     }
@@ -72,6 +75,30 @@ public class SC_GameManager : MonoBehaviour
     {
         return Time.timeScale == 0f;
     }
+
+    public void InitializeStageState(PlayerShooting player, SC_EnemySpawner spawner)
+    {
+        switch (currentDifficulty)
+        {
+            case DifficultyLevel.Easy:
+                player.stageKillCount = 0;
+                spawner.SetSpawnedEnemies(0);
+                break;
+            case DifficultyLevel.Medium:
+                player.stageKillCount = 10;
+                spawner.SetSpawnedEnemies(10);
+                break;
+            case DifficultyLevel.Hard:
+                player.stageKillCount = 20;
+                spawner.SetSpawnedEnemies(20);
+                break;
+            case DifficultyLevel.Boss:
+                player.stageKillCount = 30;
+                spawner.SetSpawnedEnemies(30);
+                break;
+        }
+    }
+
 
     public void SetDifficulty(DifficultyLevel level)
     {

@@ -26,16 +26,10 @@ public class SC_OpeningManager : MonoBehaviour
         bool skip = PlayerPrefs.GetInt("SkipOpeningVideo", 0) == 1;
         if (skip)
         {
-            //if (difficultyDropdown != null)
-            //{
-            //    difficultyDropdown.value = PlayerPrefs.GetInt("SelectedDifficulty", 0);
-            //}
-
             PlayerPrefs.SetInt("SkipOpeningVideo", 0);
             ShowSettings();
             if (skipButton != null)
                 skipButton.SetActive(false);
-
             return;
         }
 
@@ -43,8 +37,8 @@ public class SC_OpeningManager : MonoBehaviour
         settingsPanel.SetActive(false);
 
         // Hide the skip button at start
-        if (skipButton != null)
-            skipButton.SetActive(false);
+        //if (skipButton != null)
+        //    skipButton.SetActive(false);
 
         // Connect to video end event
         if (videoPlayer != null)
@@ -81,10 +75,6 @@ public class SC_OpeningManager : MonoBehaviour
 
     public void SkipVideo()
     {
-        //if (difficultyDropdown != null)
-        //{
-        //    difficultyDropdown.value = PlayerPrefs.GetInt("SelectedDifficulty", 0);
-        //}
         skipButton?.SetActive(false); // Hide skip button after it's used
 
         ShowSettings();
@@ -103,23 +93,6 @@ public class SC_OpeningManager : MonoBehaviour
     // Called when the play button is clicked
     public void OnPlayButtonClick()
     {
-        //if (difficultyDropdown != null)
-        //{
-        //    int difficultyIndex = difficultyDropdown.value;
-        //    PlayerPrefs.SetInt("SelectedDifficulty", difficultyIndex);
-
-        //    int initialSpawnedEnemies = 0;
-        //    switch (difficultyIndex)
-        //    {
-        //        case 0: initialSpawnedEnemies = 0; break;  // Easy
-        //        case 1: initialSpawnedEnemies = 10; break; // Medium
-        //        case 2: initialSpawnedEnemies = 20; break; // Hard
-        //        case 3: initialSpawnedEnemies = 30; break; // Boss
-        //    }
-
-        //    PlayerPrefs.SetInt("InitialSpawnedEnemies", initialSpawnedEnemies);
-        //    PlayerPrefs.Save();
-        //}
         if (openingMusic != null)
             openingMusic.Stop();
 

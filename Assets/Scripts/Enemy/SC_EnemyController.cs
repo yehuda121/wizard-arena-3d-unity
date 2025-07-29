@@ -5,10 +5,10 @@ public class SC_EnemyController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 1f;
-    public float stopDistance = 8f;
+    public float stopDistance = 12f;
 
     [Header("Avoidance Settings")]
-    public float avoidRadius = 8f;
+    public float avoidRadius = 10f;
     public LayerMask enemyLayer;
 
     [Header("Shooting Settings")]
