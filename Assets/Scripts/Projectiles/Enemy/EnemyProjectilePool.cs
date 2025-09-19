@@ -3,43 +3,69 @@ using UnityEngine;
 
 public class EnemyProjectilePool : MonoBehaviour
 {
+    public static EnemyProjectilePool Instance { get; private set; } // Singleton
+
+    [Header("Pool Settings")]
     public GameObject projectilePrefab;
-    public int poolSize = 20;
+    public int poolSize = 3;
+    public int expandSize = 1;
 
-    private List<GameObject> projectiles;
-    private int currentIndex = 0;
+    private Queue<GameObject> availableProjectiles;  // free projectiles
+    private List<GameObject> activeProjectiles;      // in-use projectiles
 
-    void Start()
+    void Awake()
     {
-        projectiles = new List<GameObject>();
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning("[EnemyProjectilePool] Another instance detected, destroying...");
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
 
-        for (int i = 0; i < poolSize; i++)
+        availableProjectiles = new Queue<GameObject>();
+        activeProjectiles = new List<GameObject>();
+
+        AddProjectiles(poolSize);
+    }
+
+    private void AddProjectiles(int count)
+    {
+        for (int i = 0; i < count; i++)
         {
             GameObject p = Instantiate(projectilePrefab, transform);
             p.SetActive(false);
-            projectiles.Add(p);
+            availableProjectiles.Enqueue(p);
         }
+
+        Debug.Log("[EnemyProjectilePool] Expanded by " + count + " projectiles. Total = " +
+                  (availableProjectiles.Count + activeProjectiles.Count));
     }
 
     public GameObject GetNextProjectile()
     {
-        GameObject p = projectiles[currentIndex];
-
-        if (!p.activeSelf)
+        if (availableProjectiles.Count == 0)
         {
-            p.SetActive(true);
-            //Debug.Log("Activating projectile from pool at index: " + currentIndex);
+            Debug.Log("[EnemyProjectilePool] Empty pool, expanding...");
+            AddProjectiles(expandSize);
+        }
+
+        GameObject proj = availableProjectiles.Dequeue();
+        proj.SetActive(true);
+        activeProjectiles.Add(proj);
+        return proj;
+    }
+
+    public void ReturnProjectile(GameObject proj)
+    {
+        if (activeProjectiles.Remove(proj))
+        {
+            proj.SetActive(false);
+            availableProjectiles.Enqueue(proj);
         }
         else
         {
-            //Debug.LogWarning("Projectile already active at index: " + currentIndex + ". Forcing reset.");
-            p.SetActive(false); 
-            p.SetActive(true); 
+            Debug.LogWarning("[EnemyProjectilePool] Tried to return projectile not in active list!");
         }
-
-        currentIndex = (currentIndex + 1) % poolSize;
-        return p;
     }
-
-
 }

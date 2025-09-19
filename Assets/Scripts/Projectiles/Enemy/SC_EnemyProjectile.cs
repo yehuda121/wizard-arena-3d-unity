@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 
-// Handles projectiles fired by regular enemies
 public class SC_EnemyProjectile : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        // Enemy shot and hit the player
         if (other.CompareTag("Player"))
         {
             SC_PlayerHealthSystem playerHealth = other.GetComponent<SC_PlayerHealthSystem>();
@@ -15,7 +13,12 @@ public class SC_EnemyProjectile : MonoBehaviour
                 playerHealth.TakeDamage(damageAmount);
             }
 
-            gameObject.SetActive(false);
+            // safer return
+            EnemyProjectileAutoDisable auto = GetComponent<EnemyProjectileAutoDisable>();
+            if (auto != null)
+                auto.ReturnToPool();
+            else
+                gameObject.SetActive(false);
         }
     }
 }
