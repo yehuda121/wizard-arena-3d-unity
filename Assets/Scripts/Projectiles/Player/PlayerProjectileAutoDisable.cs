@@ -1,19 +1,35 @@
-// This script automatically disables a projectile after a fixed time.
-// Used to clean up projectiles that do not hit anything.
-
 using UnityEngine;
 
 public class PlayerProjectileAutoDisable : MonoBehaviour
 {
     private float lifeTime = 3f;
+    private bool isReturned = false;
 
     void OnEnable()
     {
-        Invoke("Disable", lifeTime);
+        isReturned = false;
+        Invoke(nameof(Disable), lifeTime);
     }
 
-    void Disable()
+    void OnDisable()
     {
-        gameObject.SetActive(false);
+        CancelInvoke();
+    }
+
+    public void ReturnToPool()
+    {
+        if (!isReturned)
+        {
+            isReturned = true;
+            if (PlayerProjectilePool.Instance != null)
+                PlayerProjectilePool.Instance.ReturnProjectile(gameObject);
+            else
+                gameObject.SetActive(false);
+        }
+    }
+
+    private void Disable()
+    {
+        ReturnToPool();
     }
 }

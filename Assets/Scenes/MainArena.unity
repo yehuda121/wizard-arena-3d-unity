@@ -1126,7 +1126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1725317912486240, guid: 4be53594016aa8e4db36d8fcfdb77f61, type: 3}
-  poolSize: 30
+  poolSize: 3
+  expandSize: 1
 --- !u!4 &293637461
 Transform:
   m_ObjectHideFlags: 0
@@ -1172,7 +1173,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1354968600}
-  poolSize: 10
+  poolSize: 4
+  expandSize: 1
 --- !u!4 &338189078
 Transform:
   m_ObjectHideFlags: 0
@@ -6921,6 +6923,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3143903251508762272, guid: c696dc23c5fa5c34491ce9a1b90f2f52, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3143903251508762272, guid: c696dc23c5fa5c34491ce9a1b90f2f52, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3143903251508762272, guid: c696dc23c5fa5c34491ce9a1b90f2f52, type: 3}
