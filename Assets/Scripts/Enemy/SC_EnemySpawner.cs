@@ -2,7 +2,6 @@
 
 public class SC_EnemySpawner : MonoBehaviour
 {
-    public SC_EnemyPool enemyPool;
     public Transform[] spawnPoints;
 
     private float timer;
@@ -23,15 +22,12 @@ public class SC_EnemySpawner : MonoBehaviour
         if (PlayerPrefs.HasKey("InitialSpawnedEnemies"))
         {
             spawnedEnemiesCount = PlayerPrefs.GetInt("InitialSpawnedEnemies");
-            PlayerPrefs.DeleteKey("InitialSpawnedEnemies");// clean for next use
+            PlayerPrefs.DeleteKey("InitialSpawnedEnemies");
         }
     }
 
     void Update()
     {
-        //Debug.Log(currentDifficulty.ToString());
-        //Debug.Log(currentDifficulty == DifficultyLevel.Medium && spawnedEnemiesCount >= 10 && spawnedEnemiesCount < 20);
-
         DifficultyLevel currentDifficulty = gameManager.currentDifficulty;
 
         if (currentDifficulty == DifficultyLevel.Boss)
@@ -41,14 +37,17 @@ public class SC_EnemySpawner : MonoBehaviour
         if (currentDifficulty == DifficultyLevel.Easy && spawnedEnemiesCount < 10)
         {
             spownHelper();
-        } else if (currentDifficulty == DifficultyLevel.Medium && spawnedEnemiesCount >= 10 && spawnedEnemiesCount < 20)
+        }
+        else if (currentDifficulty == DifficultyLevel.Medium && spawnedEnemiesCount >= 10 && spawnedEnemiesCount < 20)
         {
             spownHelper();
-        } else if (currentDifficulty == DifficultyLevel.Hard && spawnedEnemiesCount >= 20 && spawnedEnemiesCount < 30)
+        }
+        else if (currentDifficulty == DifficultyLevel.Hard && spawnedEnemiesCount >= 20 && spawnedEnemiesCount < 30)
         {
             spownHelper();
         }
     }
+
     private void spownHelper()
     {
         timer += Time.deltaTime;
@@ -63,24 +62,14 @@ public class SC_EnemySpawner : MonoBehaviour
     public void SetSpawnedEnemies(int value)
     {
         spawnedEnemiesCount = value;
-        //Debug.Log("SpawnedEnemiesCount initialized to: " + spawnedEnemiesCount);
     }
-
 
     private void TrySpawn()
     {
-        if (spawnPoints.Length == 0)
-        {
-            //Debug.Log("spawnPoints.Length = 0");
-            return;
-        }
+        if (spawnPoints.Length == 0) return;
 
-        GameObject enemy = enemyPool.GetNextEnemy();
-        if (enemy == null)
-        {
-            //Debug.Log("enemy == null");
-            return;
-        }
+        GameObject enemy = SC_EnemyPool.Instance.GetNextEnemy();
+        if (enemy == null) return;
 
         for (int attempt = 0; attempt < 5; attempt++)
         {
@@ -104,7 +93,6 @@ public class SC_EnemySpawner : MonoBehaviour
             {
                 enemy.transform.position = spawnPoint.position;
                 enemy.transform.rotation = spawnPoint.rotation;
-                enemy.SetActive(true);
 
                 SC_EnemyHealthSystem enemyHealth = enemy.GetComponent<SC_EnemyHealthSystem>();
                 if (enemyHealth != null)

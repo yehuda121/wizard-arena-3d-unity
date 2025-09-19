@@ -3,44 +3,76 @@ using UnityEngine;
 
 public class SC_EnemyPool : MonoBehaviour
 {
-    public GameObject enemyPrefab;       // The enemy prefab to pool
-    public int poolSize = 30;            // Number of enemies to prepare
+    public static SC_EnemyPool Instance { get; private set; } // Singleton
 
-    private List<GameObject> enemies;    // Internal list of pooled enemies
-    public List<GameObject> Enemies => enemies;
+    [Header("Pool Settings")]
+    public GameObject enemyPrefab;   // Enemy prefab
+    public int poolSize = 10;        // Initial pool size
+    public int expandSize = 5;       // How many to add when pool is empty
 
-    void Start()
+    private Queue<GameObject> availableEnemies;  // Free enemies ready for use
+    private List<GameObject> activeEnemies;      // Enemies currently in use
+
+    void Awake()
     {
-        enemies = new List<GameObject>();
-
-        for (int i = 0; i < poolSize; i++)
+        // Singleton check
+        if (Instance != null && Instance != this)
         {
-            GameObject enemy = Instantiate(enemyPrefab);
-            enemy.name = "PooledEnemy_" + i;
-            enemy.transform.SetParent(this.transform);
-            enemy.SetActive(false);
-            enemies.Add(enemy);
+            Debug.LogWarning("[EnemyPool] Another instance detected, destroying...");
+            Destroy(gameObject);
+            return;
         }
+        Instance = this;
 
-        //Debug.Log("[EnemyPool] Initialized with " + poolSize + " enemies.");
+        // Initialize collections
+        availableEnemies = new Queue<GameObject>();
+        activeEnemies = new List<GameObject>();
+
+        // Pre-fill pool
+        AddEnemies(poolSize);
     }
 
+    // Add new enemies to the pool
+    private void AddEnemies(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            GameObject enemy = Instantiate(enemyPrefab);
+            enemy.name = "PooledEnemy_" + (availableEnemies.Count + activeEnemies.Count);
+            enemy.transform.SetParent(this.transform);
+            enemy.SetActive(false);
+            availableEnemies.Enqueue(enemy);
+        }
+        Debug.Log("[EnemyPool] Expanded by " + count + " enemies. Total = "
+                  + (availableEnemies.Count + activeEnemies.Count));
+    }
+
+    // Get enemy from pool
     public GameObject GetNextEnemy()
     {
-        //Debug.Log("[EnemyPool] Searching for inactive enemy in pool...");
-        int index = 0;
-        foreach (GameObject enemy in enemies)
+        if (availableEnemies.Count == 0)
         {
-            //Debug.Log($"[EnemyPool] Enemy {index}: active = {enemy.activeInHierarchy}");
-            if (!enemy.activeInHierarchy)
-            {
-                //Debug.Log($"[EnemyPool] Returning enemy at index {index}: {enemy.name}");
-                return enemy;
-            }
-            index++;
+            Debug.LogWarning("[EnemyPool] Pool empty, expanding...");
+            AddEnemies(expandSize);
         }
 
-        Debug.LogWarning("[EnemyPool] No available enemy in pool!");
-        return null;
+        GameObject enemy = availableEnemies.Dequeue();
+        enemy.SetActive(true);
+        activeEnemies.Add(enemy);
+        return enemy;
+    }
+
+    // Return enemy to pool (call this when enemy dies or is disabled)
+    public void ReturnEnemy(GameObject enemy)
+    {
+        if (activeEnemies.Remove(enemy))
+        {
+            enemy.SetActive(false);
+            availableEnemies.Enqueue(enemy);
+        }
+        else
+        {
+            Debug.LogWarning("[EnemyPool] Tried to return enemy not in active list!");
+        }
     }
 }

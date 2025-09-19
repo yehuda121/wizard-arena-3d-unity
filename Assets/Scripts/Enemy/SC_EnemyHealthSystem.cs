@@ -92,7 +92,6 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         SC_EnemyAnimator enemyAnimator = GetComponent<SC_EnemyAnimator>();
         if (enemyAnimator != null)
         {
-            //Debug.Log("anim death trigered");
             enemyAnimator.PlayDeath();
         }
 
@@ -112,7 +111,7 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         if (playerShooting != null)
         {
             playerShooting.score++;
-            playerShooting.stageKillCount++;;
+            playerShooting.stageKillCount++;
 
             if (!playerShooting.poweredUp)
             {
@@ -125,13 +124,13 @@ public class SC_EnemyHealthSystem : MonoBehaviour
             }
         }
 
-        StartCoroutine(DisableAfterDelay(3f));
+        // Return enemy to pool after short delay
+        StartCoroutine(ReturnToPoolAfterDelay(3f));
     }
 
-    private IEnumerator DisableAfterDelay(float delaySeconds)
+    private IEnumerator ReturnToPoolAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);
-        gameObject.SetActive(false);
+        SC_EnemyPool.Instance.ReturnEnemy(gameObject);
     }
 }
-

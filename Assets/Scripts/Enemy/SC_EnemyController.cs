@@ -166,12 +166,12 @@ public class SC_EnemyController : MonoBehaviour
 
         if (audioSource != null && enemyShootSound != null)
         {
-            audioSource.PlayOneShot(enemyShootSound, 0.5f);//shoot sound
-        } else
+            audioSource.PlayOneShot(enemyShootSound, 0.5f); // shoot sound
+        }
+        else
         {
             Debug.Log("audioSource = null || enemyShootSound != null");
         }
-
     }
 
     Vector3 CalculateAvoidance()
@@ -199,11 +199,13 @@ public class SC_EnemyController : MonoBehaviour
 
     public void Die()
     {
+        // Mark enemy as dead and return to pool
         isDead = true;
     }
 
     public void ResetEnemy()
     {
+        // Reset state when enemy is reused from the pool
         isDead = false;
         fireTimer = 0f;
         SetInitialFireDelay();
