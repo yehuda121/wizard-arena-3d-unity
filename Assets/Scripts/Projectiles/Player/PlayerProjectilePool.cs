@@ -7,8 +7,8 @@ public class PlayerProjectilePool : MonoBehaviour
 
     [Header("Pool Settings")]
     public GameObject projectilePrefab;
-    public int poolSize = 10;
-    public int expandSize = 5;
+    public int poolSize = 4;
+    public int expandSize = 1;
 
     private Queue<GameObject> availableProjectiles;
     private List<GameObject> activeProjectiles;

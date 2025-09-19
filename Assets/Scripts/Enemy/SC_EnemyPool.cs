@@ -8,7 +8,7 @@ public class SC_EnemyPool : MonoBehaviour
     [Header("Pool Settings")]
     public GameObject enemyPrefab;   // Enemy prefab
     public int poolSize = 10;        // Initial pool size
-    public int expandSize = 5;       // How many to add when pool is empty
+    public int expandSize = 1;       // How many to add when pool is empty
 
     private Queue<GameObject> availableEnemies;  // Free enemies ready for use
     private List<GameObject> activeEnemies;      // Enemies currently in use

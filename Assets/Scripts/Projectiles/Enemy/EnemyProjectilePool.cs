@@ -7,7 +7,7 @@ public class EnemyProjectilePool : MonoBehaviour
 
     [Header("Pool Settings")]
     public GameObject projectilePrefab;
-    public int poolSize = 3;
+    public int poolSize = 5;
     public int expandSize = 1;
 
     private Queue<GameObject> availableProjectiles;  // free projectiles
