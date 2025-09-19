@@ -65,8 +65,10 @@ public class SC_EnemyPool : MonoBehaviour
     // Return enemy to pool (call this when enemy dies or is disabled)
     public void ReturnEnemy(GameObject enemy)
     {
+        //Debug.Log("[EnemyPool] Returning enemy: " + enemy.name);
         if (activeEnemies.Remove(enemy))
         {
+            //Debug.Log("[EnemyPool] SUCCESS: removed from active and deactivating.");
             enemy.SetActive(false);
             availableEnemies.Enqueue(enemy);
         }
@@ -75,4 +77,5 @@ public class SC_EnemyPool : MonoBehaviour
             Debug.LogWarning("[EnemyPool] Tried to return enemy not in active list!");
         }
     }
+
 }

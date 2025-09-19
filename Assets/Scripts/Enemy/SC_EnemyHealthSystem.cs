@@ -28,9 +28,8 @@ public class SC_EnemyHealthSystem : MonoBehaviour
     public void TakeDamage(float amount)
     {
         if (currentHealth <= 0)
-        {
             return;
-        }
+
         currentHealth -= amount;
 
         float percent = Mathf.Clamp01(currentHealth / maxHealth);
@@ -38,45 +37,48 @@ public class SC_EnemyHealthSystem : MonoBehaviour
             healthBar.SetHealth(percent);
 
         if (currentHealth <= 0f)
-        {
             Die();
-        }
     }
 
     public void ResetEnemy()
     {
         currentHealth = maxHealth;
 
-        // Reset health bar or create if missing
-        if (healthBar == null)
+        if (healthBar != null)
         {
-            if (enemyHealthBarPrefab == null || healthCanvas == null || healthBarAnchor == null)
-            {
-                Debug.LogWarning("[ResetEnemy] Missing references!");
-                return;
-            }
-
-            GameObject hbInstance = Instantiate(enemyHealthBarPrefab, healthCanvas);
-            healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
-
-            if (healthBar != null)
-            {
-                healthBar.target = healthBarAnchor;
-                healthBar.SetHealth(1f);
-            }
+            healthBar.gameObject.SetActive(true);
+            healthBar.target = healthBarAnchor;
+            healthBar.SetHealth(1f);
         }
         else
         {
-            healthBar.SetHealth(1f);
+            if (enemyHealthBarPrefab != null && healthCanvas != null && healthBarAnchor != null)
+            {
+                GameObject hbInstance = Instantiate(enemyHealthBarPrefab, healthCanvas);
+                healthBar = hbInstance.GetComponent<SC_EnemyHealthBar>();
+
+                if (healthBar != null)
+                {
+                    healthBar.target = healthBarAnchor;
+                    healthBar.SetHealth(1f);
+                }
+            }
         }
 
-        // Reset controller state (prevent shooting after respawn)
+        // Reset controller
         SC_EnemyController controller = GetComponent<SC_EnemyController>();
         if (controller != null)
-        {
             controller.ResetEnemy();
+
+        // Reset animator
+        Animator animator = GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
         }
     }
+
 
     void Die()
     {
@@ -91,20 +93,17 @@ public class SC_EnemyHealthSystem : MonoBehaviour
         // Play death animation
         SC_EnemyAnimator enemyAnimator = GetComponent<SC_EnemyAnimator>();
         if (enemyAnimator != null)
-        {
             enemyAnimator.PlayDeath();
-        }
 
         // Inform controller to stop movement and shooting after death
         SC_EnemyController controller = GetComponent<SC_EnemyController>();
         if (controller != null)
-        {
             controller.Die();
-        }
 
         // Destroy health bar object
         if (healthBar != null)
-            Destroy(healthBar.gameObject);
+            healthBar.gameObject.SetActive(false);
+
 
         // Update player score and power-up system
         PlayerShooting playerShooting = FindObjectOfType<PlayerShooting>();
@@ -131,6 +130,14 @@ public class SC_EnemyHealthSystem : MonoBehaviour
     private IEnumerator ReturnToPoolAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);
-        SC_EnemyPool.Instance.ReturnEnemy(gameObject);
+
+        // climb up until we reach the pooled root (PooledEnemy_X)
+        Transform root = transform;
+        while (root.parent != null && !root.name.StartsWith("PooledEnemy"))
+        {
+            root = root.parent;
+        }
+
+        SC_EnemyPool.Instance.ReturnEnemy(root.gameObject);
     }
 }

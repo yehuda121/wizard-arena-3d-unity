@@ -9787,7 +9787,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 5571930781747816462, guid: f7f4e0ae26f379e4c8afa9397562e69c, type: 3}
-  poolSize: 30
+  poolSize: 10
+  expandSize: 5
 --- !u!114 &1906407801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9800,7 +9801,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74bf0418a8d8d2429a717aff363e953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPool: {fileID: 1906407800}
   spawnPoints:
   - {fileID: 541660717}
   - {fileID: 584207238}

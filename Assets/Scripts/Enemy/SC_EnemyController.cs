@@ -52,8 +52,7 @@ public class SC_EnemyController : MonoBehaviour
 
     void Update()
     {
-        if (isDead)
-            return;
+        if (isDead || player == null) return;
 
         debugTimer += Time.deltaTime;
         if (debugTimer >= debugInterval)
@@ -62,8 +61,6 @@ public class SC_EnemyController : MonoBehaviour
             Vector3 enemyPos = transform.position;
             Vector3 shootPointPos = enemyShootPoint != null ? enemyShootPoint.position : Vector3.zero;
         }
-
-        if (player == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         bool shouldWalk = distanceToPlayer > stopDistance;
@@ -199,7 +196,7 @@ public class SC_EnemyController : MonoBehaviour
 
     public void Die()
     {
-        // Mark enemy as dead and return to pool
+        // Mark enemy as dead
         isDead = true;
     }
 
