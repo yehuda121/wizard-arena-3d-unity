@@ -11,8 +11,11 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
-        // Enter/Exit aim mode by holding Down Arrow
-        isAiming = Input.GetKey(KeyCode.DownArrow);
+        SC_MobileInputController mobileInput = SC_MobileInputController.Instance;
+        bool mobileAim = mobileInput != null && mobileInput.AimPressed;
+
+        // Enter/Exit aim mode by holding Down Arrow or mobile aim button
+        isAiming = Input.GetKey(KeyCode.DownArrow) || mobileAim;
     }
 
     void LateUpdate()

@@ -36,25 +36,34 @@ public class PlayerMovement : MonoBehaviour
         if (playerHealth != null && playerHealth.isDead)
         {
             PlayerState.isDead = true;
-            PlayerState.isWalking = false;
+            if (PlayerState.isWalking)
+            {
+                PlayerState.isWalking = false;
+                animatorController?.SetWalking(false);
+            }
             return;
         }
 
         float moveInput = 0f;
         float rotateInput = 0f;
 
+        SC_MobileInputController mobileInput = SC_MobileInputController.Instance;
+        bool mobileForward = mobileInput != null && mobileInput.MoveForwardPressed;
+        bool mobileLeft = mobileInput != null && mobileInput.TurnLeftPressed;
+        bool mobileRight = mobileInput != null && mobileInput.TurnRightPressed;
+
         // Debug trigger: simulate death with key 'K'
         if (Input.GetKey(KeyCode.K))
             animatorController.PlayDeath();
 
-        // Read input for rotation (left/right arrows)
-        if (Input.GetKey(KeyCode.LeftArrow))
+        // Read input for rotation (left/right arrows or mobile)
+        if (Input.GetKey(KeyCode.LeftArrow) || mobileLeft)
             rotateInput = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.RightArrow) || mobileRight)
             rotateInput = 1f;
 
-        // Read input for forward movement (up arrow)
-        if (Input.GetKey(KeyCode.UpArrow) && !PlayerState.isBlocking)
+        // Read input for forward movement (up arrow or mobile)
+        if ((Input.GetKey(KeyCode.UpArrow) || mobileForward) && !PlayerState.isBlocking)
             moveInput = 1f;
 
         // Apply rotation
@@ -79,9 +88,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Update walking state globally and in animator
+        // Sync walk/idle with the animator whenever locomotion state changes
         PlayerState.isWalking = isMoving;
-        if (!alreadyMooving)
+        if (isMoving != alreadyMooving)
             animatorController?.SetWalking(isMoving);
     }
 }

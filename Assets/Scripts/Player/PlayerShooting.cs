@@ -63,22 +63,22 @@ public class PlayerShooting : MonoBehaviour
 
         PlayerState.isDead = false;
 
-        // Toggle blocking mode using 'S' key
-        if (Input.GetKeyDown(KeyCode.S))
+        SC_MobileInputController mobileInput = SC_MobileInputController.Instance;
+        bool shieldActive = Input.GetKey(KeyCode.S) ||
+            (mobileInput != null && mobileInput.ShieldPressed);
+
+        if (shieldActive != playerHealth.isBlocking)
         {
-            playerHealth.isBlocking = true;
-            PlayerState.isBlocking = true;
-            animatorController?.SetShielding(true);
-        }
-        else if (Input.GetKeyUp(KeyCode.S))
-        {
-            playerHealth.isBlocking = false;
-            PlayerState.isBlocking = false;
-            animatorController?.SetShielding(false);
+            playerHealth.isBlocking = shieldActive;
+            PlayerState.isBlocking = shieldActive;
+            animatorController?.SetShielding(shieldActive);
         }
 
-        // Shoot if spacebar is held, cooldown passed, and not blocking
-        if (!playerHealth.isBlocking && Input.GetKey(KeyCode.Space) && Time.time > lastShotTime + cooldown)
+        bool shootInput = Input.GetKey(KeyCode.Space) ||
+            (mobileInput != null && mobileInput.ShootPressed);
+
+        // Shoot if spacebar or mobile shoot is held, cooldown passed, and not blocking
+        if (!playerHealth.isBlocking && shootInput && Time.time > lastShotTime + cooldown)
         {
             PlayerState.isShooting = true;
             Shoot();
