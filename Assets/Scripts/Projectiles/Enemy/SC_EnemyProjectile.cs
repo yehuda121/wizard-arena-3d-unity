@@ -10,7 +10,11 @@ public class SC_EnemyProjectile : MonoBehaviour
             if (playerHealth != null)
             {
                 float damageAmount = playerHealth.isBlocking ? 0f : playerHealth.maxHealth * 0.10f;
-                playerHealth.TakeDamage(damageAmount);
+
+                if (damageAmount <= 0f)
+                    SC_CombatFeedback.Instance?.PlayShieldBlock(transform.position);
+                else
+                    playerHealth.TakeDamage(damageAmount);
             }
 
             // safer return

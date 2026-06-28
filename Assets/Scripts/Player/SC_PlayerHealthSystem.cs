@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 // This script manages the player's health, damage, shield handling, and death sequence
 public class SC_PlayerHealthSystem : MonoBehaviour
@@ -54,7 +53,14 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         float percent = Mathf.Clamp01(currentHealth / maxHealth);
 
         if (healthBar != null)
+        {
             healthBar.SetHealth(percent);
+            if (amount > 0f)
+                healthBar.FlashDamage();
+        }
+
+        if (amount > 0f)
+            SC_CombatFeedback.Instance?.PlayPlayerHurt();
 
         if (currentHealth <= 0f)
             Die();
@@ -83,32 +89,9 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         isDead = true;
         animatorController?.PlayDeath();
 
-        if (gameOverText != null)
-        {
-            gameOverText.SetActive(true);
-        }
+        if (SC_EndScreenController.Instance != null)
+            SC_EndScreenController.Instance.ShowGameOver();
         else
-        {
-            Transform[] all = GameObject.FindObjectsOfType<Transform>(true);
-            foreach (Transform t in all)
-            {
-                if (t.name == "GameOverText")
-                {
-                    t.gameObject.SetActive(true);
-                    break;
-                }
-            }
-        }
-
-        StartCoroutine(HandleGameOver());
-    }
-
-    private System.Collections.IEnumerator HandleGameOver()
-    {
-        yield return new WaitForSecondsRealtime(3f);
-
-        PlayerPrefs.SetInt("SkipOpeningVideo", 1);
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("OpeningScene");
+            Debug.LogWarning("[PlayerHealth] SC_EndScreenController not found.");
     }
 }

@@ -12,6 +12,10 @@ public class SC_BossProjectile : MonoBehaviour
             {
                 // Always send full boss damage; shield handling is done inside TakeDamage
                 float rawDamage = playerHealth.maxHealth * 0.35f;
+
+                if (playerHealth.isBlocking)
+                    SC_CombatFeedback.Instance?.PlayShieldBlock(transform.position);
+
                 playerHealth.TakeDamage(rawDamage);
             }
         }

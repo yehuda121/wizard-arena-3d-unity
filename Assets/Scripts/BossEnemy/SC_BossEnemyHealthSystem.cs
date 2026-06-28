@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SC_BossEnemyHealthSystem : MonoBehaviour
 {
@@ -108,22 +107,11 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
             }
         }
 
-        if (victoryText != null)
+        if (SC_EndScreenController.Instance != null)
+            SC_EndScreenController.Instance.ShowVictory();
+        else if (victoryText != null)
             victoryText.SetActive(true);
         else
-            Debug.Log("victoryText = null");
-
-        StartCoroutine(DisableAfterDelay(5f));
-    }
-
-    private IEnumerator DisableAfterDelay(float delaySeconds)
-    {
-        yield return new WaitForSeconds(delaySeconds);
-
-        SC_GameManager gm = FindObjectOfType<SC_GameManager>();
-        if (gm != null)
-            gm.ReturnToMainMenu();
-        else
-            Debug.LogWarning("[Boss] GameManager not found.");
+            Debug.LogWarning("[Boss] SC_EndScreenController not found.");
     }
 }

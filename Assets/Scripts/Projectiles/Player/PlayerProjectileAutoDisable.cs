@@ -18,14 +18,23 @@ public class PlayerProjectileAutoDisable : MonoBehaviour
 
     public void ReturnToPool()
     {
-        if (!isReturned)
+        if (isReturned)
+            return;
+
+        isReturned = true;
+        CancelInvoke(nameof(Disable));
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            isReturned = true;
-            if (PlayerProjectilePool.Instance != null)
-                PlayerProjectilePool.Instance.ReturnProjectile(gameObject);
-            else
-                gameObject.SetActive(false);
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
+
+        if (PlayerProjectilePool.Instance != null)
+            PlayerProjectilePool.Instance.ReturnProjectile(gameObject);
+        else
+            gameObject.SetActive(false);
     }
 
     private void Disable()

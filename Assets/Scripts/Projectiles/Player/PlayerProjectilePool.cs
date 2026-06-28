@@ -55,14 +55,16 @@ public class PlayerProjectilePool : MonoBehaviour
 
     public void ReturnProjectile(GameObject proj)
     {
-        if (activeProjectiles.Remove(proj))
-        {
-            proj.SetActive(false);
-            availableProjectiles.Enqueue(proj);
-        }
-        else
-        {
+        if (proj == null)
+            return;
+
+        if (!activeProjectiles.Remove(proj))
             Debug.LogWarning("[PlayerProjectilePool] Tried to return projectile not in active list!");
-        }
+
+        if (proj.activeSelf)
+            proj.SetActive(false);
+
+        if (!availableProjectiles.Contains(proj))
+            availableProjectiles.Enqueue(proj);
     }
 }
