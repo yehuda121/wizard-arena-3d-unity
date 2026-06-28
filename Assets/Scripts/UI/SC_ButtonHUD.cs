@@ -13,20 +13,25 @@ public class SC_ButtonHUD : MonoBehaviour
     [Header("Stats Panel")]
     public GameObject StatsContainer;
 
+    [Header("Gameplay References")]
+    [SerializeField] private PlayerShooting playerShooting;
+    [SerializeField] private SC_PlayerHealthSystem playerHealth;
+    [SerializeField] private SC_GameManager gameManager;
+
     private float elapsedTime = 0f;
     private bool isVisible = true;
-
-    private PlayerShooting playerShooting;
-    private SC_PlayerHealthSystem playerHealth;
-    private SC_GameManager gameManager;
-
     private DifficultyLevel lastDifficulty;
 
     void Start()
     {
-        playerShooting = FindObjectOfType<PlayerShooting>();
-        playerHealth = FindObjectOfType<SC_PlayerHealthSystem>();
-        gameManager = FindObjectOfType<SC_GameManager>();
+        if (playerShooting == null)
+            playerShooting = FindObjectOfType<PlayerShooting>();
+
+        if (playerHealth == null)
+            playerHealth = FindObjectOfType<SC_PlayerHealthSystem>();
+
+        if (gameManager == null)
+            gameManager = FindObjectOfType<SC_GameManager>();
 
         if (gameManager != null)
         {
@@ -37,7 +42,6 @@ public class SC_ButtonHUD : MonoBehaviour
 
     void Update()
     {
-        // Update timer every frame
         elapsedTime += Time.deltaTime;
         int minutes = Mathf.FloorToInt(elapsedTime / 60f);
         int seconds = Mathf.FloorToInt(elapsedTime % 60f);
@@ -45,7 +49,6 @@ public class SC_ButtonHUD : MonoBehaviour
         if (TimerText != null)
             TimerText.text = $"Timer: {minutes}:{seconds:00}";
 
-        // Update health
         if (playerHealth != null && HealthText != null)
         {
             float percent = Mathf.Clamp01(playerHealth.GetCurrentHealth() / playerHealth.maxHealth);
@@ -53,7 +56,6 @@ public class SC_ButtonHUD : MonoBehaviour
             HealthText.text = "Health: " + displayPercent + "%";
         }
 
-        // Update boost and score
         if (playerShooting != null)
         {
             if (BoostText != null)
@@ -65,12 +67,9 @@ public class SC_ButtonHUD : MonoBehaviour
             }
 
             if (ScoreText != null)
-            {
                 ScoreText.text = "Score: " + playerShooting.score;
-            }
         }
 
-        // Update level if changed
         if (gameManager != null && gameManager.currentDifficulty != lastDifficulty)
         {
             lastDifficulty = gameManager.currentDifficulty;
@@ -78,14 +77,12 @@ public class SC_ButtonHUD : MonoBehaviour
         }
     }
 
-    // Updates the level text in the HUD
     private void UpdateLevelText(string levelName)
     {
         if (LevelText != null)
             LevelText.text = "Level: " + levelName;
     }
 
-    // Toggle visibility of stats panel
     public void ToggleStatsPanel()
     {
         if (StatsContainer != null)

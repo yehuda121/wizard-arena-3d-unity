@@ -14,15 +14,13 @@ public class SC_GameManager : MonoBehaviour
     public GameObject startOverButton;
 
     private static bool isPaused = false;
-    private SC_MusicManager musicManager;
 
     private bool bossSpawned = false;
     private PlayerShooting player;
 
     void Start()
     {
-        // Find and assign music manager reference
-        musicManager = FindObjectOfType<SC_MusicManager>();
+        // Find and assign references
         player = FindObjectOfType<PlayerShooting>();
         enemySpawner = FindObjectOfType<SC_EnemySpawner>();
 

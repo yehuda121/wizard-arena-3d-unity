@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SC_EnemyController : MonoBehaviour
 {
@@ -23,9 +22,6 @@ public class SC_EnemyController : MonoBehaviour
     private EnemyProjectilePool projectilePool;
     private SC_GameManager gameManager;
     private SC_EnemyAnimator enemyAnimator;
-
-    private float debugInterval = 3f;
-    private float debugTimer = 0f;
 
     private bool isDead = false;
 
@@ -53,14 +49,6 @@ public class SC_EnemyController : MonoBehaviour
     void Update()
     {
         if (isDead || player == null) return;
-
-        debugTimer += Time.deltaTime;
-        if (debugTimer >= debugInterval)
-        {
-            debugTimer = 0f;
-            Vector3 enemyPos = transform.position;
-            Vector3 shootPointPos = enemyShootPoint != null ? enemyShootPoint.position : Vector3.zero;
-        }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         bool shouldWalk = distanceToPlayer > stopDistance;
@@ -163,7 +151,7 @@ public class SC_EnemyController : MonoBehaviour
 
         if (audioSource != null && enemyShootSound != null)
         {
-            audioSource.PlayOneShot(enemyShootSound, 0.5f); // shoot sound
+            audioSource.PlayOneShot(enemyShootSound, 0.5f);
         }
         else
         {
@@ -196,13 +184,11 @@ public class SC_EnemyController : MonoBehaviour
 
     public void Die()
     {
-        // Mark enemy as dead
         isDead = true;
     }
 
     public void ResetEnemy()
     {
-        // Reset state when enemy is reused from the pool
         isDead = false;
         fireTimer = 0f;
         SetInitialFireDelay();

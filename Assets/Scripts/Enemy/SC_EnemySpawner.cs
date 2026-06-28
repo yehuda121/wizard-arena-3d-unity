@@ -8,6 +8,7 @@ public class SC_EnemySpawner : MonoBehaviour
     private int spawnedEnemiesCount = 0;
     private float spawnInterval = 10f;
     private SC_GameManager gameManager;
+    private DifficultyLevel lastDifficulty;
 
     void Start()
     {
@@ -18,6 +19,7 @@ public class SC_EnemySpawner : MonoBehaviour
             return;
         }
         ApplyDifficultySettings(gameManager.currentDifficulty);
+        lastDifficulty = gameManager.currentDifficulty;
 
         if (PlayerPrefs.HasKey("InitialSpawnedEnemies"))
         {
@@ -29,6 +31,12 @@ public class SC_EnemySpawner : MonoBehaviour
     void Update()
     {
         DifficultyLevel currentDifficulty = gameManager.currentDifficulty;
+
+        if (currentDifficulty != lastDifficulty)
+        {
+            lastDifficulty = currentDifficulty;
+            ApplyDifficultySettings(currentDifficulty);
+        }
 
         if (currentDifficulty == DifficultyLevel.Boss)
         {

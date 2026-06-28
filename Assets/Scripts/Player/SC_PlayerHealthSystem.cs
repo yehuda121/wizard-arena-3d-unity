@@ -1,31 +1,34 @@
 ﻿using UnityEngine;
-using TMPro;
 using UnityEngine.SceneManagement;
 
 // This script manages the player's health, damage, shield handling, and death sequence
 public class SC_PlayerHealthSystem : MonoBehaviour
 {
-    public float maxHealth = 100f;           // Maximum player health
-    private float currentHealth;             // Current player health
-    public bool isBlocking = false;          // Whether the player is currently blocking
-
-    private SC_PlayerHealthBar healthBar;    // UI health bar
-    private SC_WizardAnimator animatorController;
+    public float maxHealth = 100f;
+    private float currentHealth;
+    public bool isBlocking = false;
     public bool isDead = false;
+
+    [Header("References")]
+    [SerializeField] private SC_PlayerHealthBar healthBar;
+    [SerializeField] private GameObject gameOverText;
+    [SerializeField] private SC_GameManager gameManager;
+
+    private SC_WizardAnimator animatorController;
 
     void Start()
     {
         currentHealth = maxHealth;
 
-        // Try to find the health bar object in the scene if not already assigned
         if (healthBar == null)
             healthBar = FindObjectOfType<SC_PlayerHealthBar>();
 
-        // Initialize the health bar to full health if found
-        if (healthBar != null)
-            healthBar.SetHealth(1f); // 100% filled
+        if (gameManager == null)
+            gameManager = FindObjectOfType<SC_GameManager>();
 
-        // Get the reference to the wizard's animation controller
+        if (healthBar != null)
+            healthBar.SetHealth(1f);
+
         animatorController = GetComponent<SC_WizardAnimator>();
     }
 
@@ -33,32 +36,25 @@ public class SC_PlayerHealthSystem : MonoBehaviour
     {
         if (isDead) return;
 
-        SC_GameManager gameManager = FindObjectOfType<SC_GameManager>();
+        if (gameManager == null)
+            gameManager = FindObjectOfType<SC_GameManager>();
 
-        // If blocking and not in boss stage, ignore damage
         if (isBlocking)
         {
             if (gameManager != null && gameManager.currentDifficulty != DifficultyLevel.Boss)
                 return;
 
-            // If in boss stage while blocking, reduce damage
             if (gameManager != null && gameManager.currentDifficulty == DifficultyLevel.Boss)
                 amount = maxHealth * 0.05f;
         }
 
         if (currentHealth > 0)
-        {
             currentHealth -= amount;
-        }
+
         float percent = Mathf.Clamp01(currentHealth / maxHealth);
 
-        // Update health UI
         if (healthBar != null)
             healthBar.SetHealth(percent);
-
-        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        //if (hud != null)
-        //    hud.UpdateHealth(currentHealth / maxHealth);
 
         if (currentHealth <= 0f)
             Die();
@@ -69,41 +65,38 @@ public class SC_PlayerHealthSystem : MonoBehaviour
         return currentHealth;
     }
 
-
     public void ResetToFull()
     {
         currentHealth = maxHealth;
 
-        // Reassign the health bar if it's missing (fallback)
         if (healthBar == null)
             healthBar = FindObjectOfType<SC_PlayerHealthBar>();
 
-        // Update the UI health bar
         if (healthBar != null)
-            healthBar.SetHealth(1f); // full again
-
+            healthBar.SetHealth(1f);
     }
-
 
     private void Die()
     {
-        if(isDead) return;
+        if (isDead) return;
 
-        // Trigger death animation through animator controller
         isDead = true;
         animatorController?.PlayDeath();
 
-        // Pause the game
-        //Time.timeScale = 0f;
-
-        // Show "Game Over" text
-        Transform[] all = GameObject.FindObjectsOfType<Transform>(true);
-        foreach (Transform t in all)
+        if (gameOverText != null)
         {
-            if (t.name == "GameOverText")
+            gameOverText.SetActive(true);
+        }
+        else
+        {
+            Transform[] all = GameObject.FindObjectsOfType<Transform>(true);
+            foreach (Transform t in all)
             {
-                t.gameObject.SetActive(true);
-                break;
+                if (t.name == "GameOverText")
+                {
+                    t.gameObject.SetActive(true);
+                    break;
+                }
             }
         }
 
@@ -112,7 +105,6 @@ public class SC_PlayerHealthSystem : MonoBehaviour
 
     private System.Collections.IEnumerator HandleGameOver()
     {
-        // Wait 3 real-time seconds before transitioning
         yield return new WaitForSecondsRealtime(3f);
 
         PlayerPrefs.SetInt("SkipOpeningVideo", 1);

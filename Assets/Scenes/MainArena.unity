@@ -899,6 +899,9 @@ MonoBehaviour:
   LevelText: {fileID: 1814484625}
   ScoreText: {fileID: 1414789000}
   StatsContainer: {fileID: 149453559}
+  playerShooting: {fileID: 785156349}
+  playerHealth: {fileID: 785156350}
+  gameManager: {fileID: 845175442}
 --- !u!114 &149453562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2954,6 +2957,7 @@ MonoBehaviour:
   killCount: 0
   poweredUp: 0
   powerUpDuration: 30
+  powerUpDamageMultiplier: 2
   score: 0
   stageKillCount: 0
   spellShootClip: {fileID: 8300000, guid: a800b31a4e63b1a4291f4639d51e8cb0, type: 3}
@@ -2972,6 +2976,9 @@ MonoBehaviour:
   maxHealth: 100
   isBlocking: 0
   isDead: 0
+  healthBar: {fileID: 0}
+  gameOverText: {fileID: 836723927}
+  gameManager: {fileID: 845175442}
 --- !u!114 &785156351
 MonoBehaviour:
   m_ObjectHideFlags: 0

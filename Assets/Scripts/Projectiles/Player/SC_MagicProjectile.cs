@@ -2,8 +2,16 @@
 
 public class SC_MagicProjectile : MonoBehaviour
 {
+    private const float EnemyDamageFraction = 0.25f;
+    private const float BossDamageFraction = 0.10f;
+
+    [HideInInspector]
+    public float damageMultiplier = 1f;
+
     private void OnEnable()
     {
+        damageMultiplier = 1f;
+
         foreach (ParticleSystem ps in GetComponentsInChildren<ParticleSystem>())
         {
             ps.Clear();
@@ -24,7 +32,7 @@ public class SC_MagicProjectile : MonoBehaviour
             SC_BossEnemyHealthSystem bossHealth = other.GetComponent<SC_BossEnemyHealthSystem>();
             if (bossHealth != null)
             {
-                bossHealth.TakeDamage(bossHealth.maxHealth * 0.10f);
+                bossHealth.TakeDamage(bossHealth.maxHealth * BossDamageFraction * damageMultiplier);
             }
         }
         else if (other.CompareTag("Enemy"))
@@ -32,7 +40,7 @@ public class SC_MagicProjectile : MonoBehaviour
             SC_EnemyHealthSystem enemyHealth = other.GetComponent<SC_EnemyHealthSystem>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(enemyHealth.maxHealth * 0.25f);
+                enemyHealth.TakeDamage(enemyHealth.maxHealth * EnemyDamageFraction * damageMultiplier);
             }
         }
 

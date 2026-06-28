@@ -38,14 +38,8 @@ public class SC_BossEnemy : MonoBehaviour
         if (gameManager != null && gameManager.IsGamePaused()) return;
         if (player == null) return;
 
-        //if (bossHealthSystem.currentHealth <= 0) return;
         if (bossHealthSystem != null && bossHealthSystem.isDead)
-        {
-            //Debug.Log("Boss is dead (health = " + bossHealthSystem.currentHealth + "), skipping Update");
             return;
-        }
-
-
         // Rotate to face the player horizontally
         Vector3 lookDir = player.position - transform.position;
         lookDir.y = 0f; // Horizontal rotation only
@@ -92,11 +86,7 @@ public class SC_BossEnemy : MonoBehaviour
             rb.velocity = BossShootPoint.forward * 15f;
         }
         else
-        {
             Debug.LogWarning("[BossEnemy] Projectile prefab is missing Rigidbody!");
-        }
-
-        //Debug.Log("[BossEnemy] Boss shot projectile.");
     }
 
 }

@@ -45,10 +45,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Debug trigger: simulate death with key 'K'
         if (Input.GetKey(KeyCode.K))
-        {
             animatorController.PlayDeath();
-            //PlayerState.isDead = true;
-        } 
 
         // Read input for rotation (left/right arrows)
         if (Input.GetKey(KeyCode.LeftArrow))

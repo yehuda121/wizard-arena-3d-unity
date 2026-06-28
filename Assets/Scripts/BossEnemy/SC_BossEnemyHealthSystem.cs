@@ -11,23 +11,22 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
     public GameObject enemyHealthBarPrefab;
     public Transform healthBarAnchor;
     public Transform healthCanvas;
-
-    private GameObject victoryCanvas;
-    private GameObject victoryTextObject;
-
+    [SerializeField] private GameObject victoryText;
 
     [HideInInspector]
     public bool isDead = false;
 
     void Start()
     {
-        victoryCanvas = GameObject.Find("VictoryCanvas");
-        if (victoryCanvas != null)
+        if (victoryText == null)
         {
-            victoryTextObject = victoryCanvas.transform.Find("VictoryText")?.gameObject;
-            if (victoryTextObject != null)
-                victoryTextObject.SetActive(false);
+            GameObject victoryCanvas = GameObject.Find("VictoryCanvas");
+            if (victoryCanvas != null)
+                victoryText = victoryCanvas.transform.Find("VictoryText")?.gameObject;
         }
+
+        if (victoryText != null)
+            victoryText.SetActive(false);
 
         currentHealth = maxHealth;
         healthBar = GetComponentInChildren<SC_EnemyHealthBar>();
@@ -50,9 +49,7 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
             healthBar.SetHealth(percent);
 
         if (currentHealth <= 0f)
-        {
             Die();
-        }
     }
 
     public void ResetEnemy()
@@ -89,9 +86,7 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
 
         SC_BossAnimator bossAnimator = GetComponent<SC_BossAnimator>();
         if (bossAnimator != null)
-        {
             bossAnimator.PlayDeath();
-        }
 
         if (healthBar != null)
             Destroy(healthBar.gameObject);
@@ -113,14 +108,12 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
             }
         }
 
-        if (victoryTextObject != null)
-            victoryTextObject.SetActive(true);
+        if (victoryText != null)
+            victoryText.SetActive(true);
         else
-        {
-            Debug.Log("victoryTextObject = null");
-        }
+            Debug.Log("victoryText = null");
 
-            StartCoroutine(DisableAfterDelay(5f));
+        StartCoroutine(DisableAfterDelay(5f));
     }
 
     private IEnumerator DisableAfterDelay(float delaySeconds)
@@ -129,12 +122,8 @@ public class SC_BossEnemyHealthSystem : MonoBehaviour
 
         SC_GameManager gm = FindObjectOfType<SC_GameManager>();
         if (gm != null)
-        {
             gm.ReturnToMainMenu();
-        }
         else
-        {
             Debug.LogWarning("[Boss] GameManager not found.");
-        }
     }
 }

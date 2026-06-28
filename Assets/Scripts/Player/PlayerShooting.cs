@@ -13,6 +13,7 @@ public class PlayerShooting : MonoBehaviour
     public bool poweredUp = false;       // Whether stronger projectiles are active
     private float powerUpTimer = 0f;     // Timer for remaining boost time
     public float powerUpDuration = 30f;  // Duration of the power-up in seconds
+    public float powerUpDamageMultiplier = 2f;
 
     public int score = 0;                // Total number of enemies defeated (for score)
     public int stageKillCount = 0;       // For tracking kills during each stage
@@ -24,8 +25,6 @@ public class PlayerShooting : MonoBehaviour
 
     public AudioClip spellShootClip;
     private AudioSource audioSource;
-
-    private SC_GameManager gameManager;
 
     void Start()
     {
@@ -60,10 +59,7 @@ public class PlayerShooting : MonoBehaviour
     void Update()
     {
         if (playerHealth.isDead)
-        {
-            //PlayerState.isDead = true;
             return;
-        }
 
         PlayerState.isDead = false;
 
@@ -104,12 +100,6 @@ public class PlayerShooting : MonoBehaviour
             }
         }
 
-        // Update HUD boost timer
-        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        //if (hud != null)
-        //{
-        //    hud.UpdateBoostTime(poweredUp ? powerUpTimer : 0f);
-        //}
     }
 
     // Called when the player reaches the kill threshold for power-up
@@ -117,12 +107,6 @@ public class PlayerShooting : MonoBehaviour
     {
         poweredUp = true;
         powerUpTimer = powerUpDuration;
-
-        //SC_GameHUD hud = FindObjectOfType<SC_GameHUD>();
-        //if (hud != null)
-        //{
-        //    hud.UpdateBoostTime(powerUpTimer);
-        //}
     }
 
     public float GetRemainingBoostTime()
@@ -141,9 +125,13 @@ public class PlayerShooting : MonoBehaviour
 
         projectile.SetActive(true);
 
+        SC_MagicProjectile magicProjectile = projectile.GetComponent<SC_MagicProjectile>();
+        if (magicProjectile != null)
+            magicProjectile.damageMultiplier = poweredUp ? powerUpDamageMultiplier : 1f;
+
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         rb.velocity = shootPoint.forward * shootForce;
 
-        audioSource.PlayOneShot(spellShootClip); //play the sound
+        audioSource.PlayOneShot(spellShootClip);
     }
 }
